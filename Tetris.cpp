@@ -44,7 +44,7 @@ void blit(SDL_Texture* texture, int posX, int posY)
 	destination.x = posX;
 	destination.y = posY;
 
-	SDL_QueryTexture(texture, NULL, NULL, &destination.x, &destination.y);
+	SDL_QueryTexture(texture, NULL, NULL, &destination.w, &destination.h);
 	SDL_RenderCopy(renderer, texture, NULL, &destination);
 }
 
@@ -63,7 +63,7 @@ void handleMenuEvents(SDL_Event& event)
 
 void drawMenu()
 {
-	blit(logo, 0, 0);
+	blit(logo, SCREEN_WIDTH / 2 - 305, SCREEN_HEIGHT / 2 - 216);
 }
 
 // Game Methods
