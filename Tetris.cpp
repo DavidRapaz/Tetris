@@ -1,3 +1,8 @@
+#include "classes/Renderer.h"
+#include "classes/screen/Screen.h"
+#include "classes/screen/Game.h"
+#include "classes/screen/Menu.h"
+#include "State.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -5,10 +10,6 @@
 #include <iostream>
 
 #undef main // Happens because SDL has a main definition
-
-// ENUMS
-
-enum class State { InMenu, InGame, Quit };
 
 // CONSTANTS
 
@@ -18,117 +19,23 @@ enum class State { InMenu, InGame, Quit };
 // GLOBAL VARS
 
 SDL_Window* window;
-SDL_Renderer* renderer;
 
-State gameState = State::InMenu;
-
-int currentScreenInit = 0; // Controls if the current screen was initialized
-
-SDL_Texture* logo = nullptr;
-
-// METHODS
-
-// Common Methods
-
-SDL_Texture* loadTexture(const char* filename)
-{
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
-
-	return IMG_LoadTexture(renderer, filename);
-}
-
-void blit(SDL_Texture* texture, int posX, int posY)
-{
-	SDL_Rect destination;
-
-	destination.x = posX;
-	destination.y = posY;
-
-	SDL_QueryTexture(texture, NULL, NULL, &destination.w, &destination.h);
-	SDL_RenderCopy(renderer, texture, NULL, &destination);
-}
-
-// Main Menu Methods
-
-void initMenu()
-{
-	currentScreenInit = 1;
-	logo              = loadTexture("./assets/images/tetrisLogo.png");
-}
-
-void handleMenuEvents(SDL_Event& event)
-{
-
-}
-
-void drawMenu()
-{
-	blit(logo, SCREEN_WIDTH / 2 - 305, SCREEN_HEIGHT / 2 - 216);
-}
-
-// Game Methods
-
-void initGame()
-{
-	currentScreenInit = 1;
-}
-
-void handleGameEvents(SDL_Event& event)
-{
-
-}
-
-void drawGame()
-{
-
-}
-
-// Handle the window events
-void eventsHandler()
-{
-	SDL_Event event;
-
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			gameState = State::Quit;
-			break;
-		default:
-			break;
-		}
-	}
-}
-
-// Clear the screen
-void prepareScene()
-{
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-}
-
-// Present the screen infomation
-void presentScene(void)
-{
-	SDL_RenderPresent(renderer);
-}
+State currentState  = State::InMenu;
+State previousState = State::InMenu;
 
 int main()
 {
-	int rendererFlags, windowFlags;
-
-	rendererFlags = SDL_RENDERER_ACCELERATED;
-	windowFlags   = 0;
+	int windowFlags;
+	windowFlags = 0;
 
 	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER) < 0)
 	{
 		printf("Failed to open %d x %d window: %s\n", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_GetError());
 		exit(1);
 	}
 
-	window = SDL_CreateWindow("Menu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
+	window = SDL_CreateWindow("Tetris", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
 
 	if (!window)
 	{
@@ -136,41 +43,20 @@ int main()
 		exit(1);
 	}
 
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-	renderer = SDL_CreateRenderer(window, -1, rendererFlags);
+	Renderer renderer(window);
+	Screen* currentScreen = new Menu(&renderer, &currentState);
 
-	if (!renderer)
-	{
-		printf("Failed to create renderer: %s\n", SDL_GetError());
-		exit(1);
-	}
-
-	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 	atexit(SDL_Quit);
 
 	// Execute while the users doesn't quit
-	while (gameState != State::Quit)
+	while (currentState != State::Quit)
 	{
-		prepareScene();
-		eventsHandler();
+		renderer.PrepareScene();
 
-		switch (gameState)
-		{
-		case State::InMenu:
-			if (currentScreenInit == 0)
-				initMenu();
+		currentScreen->HandleEvents();
+		currentScreen->Draw();
 
-			drawMenu();
-			break;
-		case State::InGame:
-			if (currentScreenInit == 0)
-				initGame();
-
-			drawGame();
-			break;
-		}
-
-		presentScene();
+		renderer.PresentScene();
 		SDL_Delay(16);
 	}
 
