@@ -15,7 +15,7 @@ public:
 	/// <summary>
 	/// Handle the screen events
 	/// </summary>
-	virtual void HandleEvents() = 0;
+	virtual void HandleEvents(State& gameState) = 0;
 
 	/// <summary>
 	/// Draws the what is targeted to show in the screen

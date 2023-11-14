@@ -3,18 +3,17 @@
 #include "../Renderer.h"
 #include "../../State.h"
 
-Menu::Menu(Renderer* gameRenderer, State* gameState)
+Menu::Menu(Renderer* gameRenderer)
 {
-	m_Renderer     = gameRenderer;
-	m_CurrentState = gameState;
-	m_Logo         = m_Renderer->LoadTexture("assets/images/tetrisLogo.png");
-	m_InfoText     = m_Renderer->LoadText("Press arrow down to start or esc to quit");
+	m_Renderer = gameRenderer;
+	m_Logo     = m_Renderer->LoadTexture("./assets/images/tetrisLogo.png");
+	m_InfoText = m_Renderer->LoadText("Press arrow down to start or esc to quit");
 }
 
 Menu::~Menu()
 { }
 
-void Menu::HandleEvents()
+void Menu::HandleEvents(State& gameState)
 {
 	SDL_Event event;
 
@@ -23,9 +22,16 @@ void Menu::HandleEvents()
 		switch (event.type)
 		{
 		case SDL_QUIT:
-			*m_CurrentState = State::Quit;
+			gameState = State::Quit;
 			break;
 		case SDL_KEYDOWN:
+			if (event.key.keysym.sym == SDLK_DOWN)
+			{
+				gameState = State::InGame;
+			} else if (event.key.keysym.sym == SDLK_ESCAPE)
+			{
+				gameState = State::Quit;
+			}
 			break;
 		default:
 			break;

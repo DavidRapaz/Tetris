@@ -48,8 +48,25 @@ SDL_Texture* Renderer::LoadText(const char* text, SDL_Color textColor)
 }
 
 /// <summary>
-/// Renders a given texture in the specified position, 
-/// can also define the texture width and height
+/// Renders a given texture in the specified position
+/// </summary>
+/// <param name="texture"></param>
+/// <param name="posX"></param>
+/// <param name="posY"></param>
+void Renderer::RenderTexture(SDL_Texture* texture, int posX, int posY)
+{
+	SDL_Rect destination;
+
+	destination.x = posX;
+	destination.y = posY;
+
+	SDL_QueryTexture(texture, NULL, NULL, &destination.w, &destination.h);
+	SDL_RenderCopy(renderer, texture, NULL, &destination);
+}
+
+/// <summary>
+/// Renders a given texture in the specified position,
+/// with a defined width and heigh
 /// </summary>
 /// <param name="texture"></param>
 /// <param name="posX"></param>
@@ -62,15 +79,30 @@ void Renderer::RenderTexture(SDL_Texture* texture, int posX, int posY, int width
 
 	destination.x = posX;
 	destination.y = posY;
+	destination.h = height;
+	destination.w = width;
 
-	if (width != 0)
-		destination.w = width;
+	SDL_RenderCopyEx(renderer, texture, NULL, &destination, 0, NULL, SDL_FLIP_NONE);
+}
 
-	if (height != 0)
-		destination.h = height;
+/// <summary>
+/// Renders a rectangle with the given "coordinates"
+/// </summary>
+/// <param name="posX"></param>
+/// <param name="posY"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+void Renderer::RenderRect(int posX, int posY, int width, int height)
+{
+	SDL_Rect rect;
 
-	SDL_QueryTexture(texture, NULL, NULL, &destination.w, &destination.h);
-	SDL_RenderCopy(renderer, texture, NULL, &destination);
+	rect.x = posX;
+	rect.y = posY;
+	rect.w = width;
+	rect.h = height;
+
+	SDL_SetRenderDrawColor(renderer, 211, 211, 211, 255);
+	SDL_RenderDrawRect(renderer, &rect);
 }
 
 /// <summary>

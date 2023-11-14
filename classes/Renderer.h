@@ -36,8 +36,28 @@ public:
 	/// <param name="posY"></param>
 	/// <param name="width"></param>
 	/// <param name="height"></param>
-	void RenderTexture(SDL_Texture* texture, int posX, int posY, int width = 0, int height = 0);
+	void RenderTexture(SDL_Texture* texture, int posX, int posY);
 	
+	/// <summary>
+	/// Renders a given texture in the specified position,
+	/// with a defined width and heigh
+	/// </summary>
+	/// <param name="texture"></param>
+	/// <param name="posX"></param>
+	/// <param name="posY"></param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	void RenderTexture(SDL_Texture* texture, int posX, int posY, int width, int height);
+
+	/// <summary>
+	/// Renders a rectangle with the given "coordinates"
+	/// </summary>
+	/// <param name="posX"></param>
+	/// <param name="posY"></param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	void RenderRect(int posX, int posY, int width, int height);
+
 	/// <summary>
 	/// Resets the scene with the color black
 	/// </summary>

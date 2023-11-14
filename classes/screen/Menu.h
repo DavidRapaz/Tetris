@@ -4,13 +4,13 @@
 class Menu : public Screen
 {
 public:
-	Menu(Renderer* gameRenderer, State* gameState);
+	Menu(Renderer* gameRenderer);
 	~Menu();
 
 	/// <summary>
 	/// Handle the screen events
 	/// </summary>
-	virtual void HandleEvents() override;
+	virtual void HandleEvents(State& gameState) override;
 
 	/// <summary>
 	/// Draws the what is targeted to show in the screen

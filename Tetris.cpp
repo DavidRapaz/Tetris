@@ -1,13 +1,20 @@
+// SDL
+#include <SDL_video.h>
+
+// Input/Output
+#include <stdio.h>
+#include <iostream>
+
+// General classes 
 #include "classes/Renderer.h"
+
+// Screen Classes
 #include "classes/screen/Screen.h"
 #include "classes/screen/Game.h"
 #include "classes/screen/Menu.h"
+
+// Enums
 #include "State.h"
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <stdio.h>
-#include <iostream>
 
 #undef main // Happens because SDL has a main definition
 
@@ -44,7 +51,7 @@ int main()
 	}
 
 	Renderer renderer(window);
-	Screen* currentScreen = new Menu(&renderer, &currentState);
+	Screen* currentScreen = new Menu(&renderer);
 
 	atexit(SDL_Quit);
 
@@ -53,7 +60,21 @@ int main()
 	{
 		renderer.PrepareScene();
 
-		currentScreen->HandleEvents();
+		// Check if there was a change in the game state
+		if (currentState != previousState)
+		{
+			previousState = currentState;
+
+			if (currentState == State::InGame)
+			{
+				currentScreen = new Game(&renderer);
+			} else if (currentState == State::InMenu)
+			{
+				currentScreen = new Menu(&renderer);
+			}
+		}
+
+		currentScreen->HandleEvents(currentState);
 		currentScreen->Draw();
 
 		renderer.PresentScene();
