@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\include;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\include;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\include;D:\_dev\C++\_frameworks\SDL2_ttf-2.20.2\include;D:\_dev\C++\_frameworks\SDL2_image-2.6.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\lib\x64;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\lib\x64;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\lib\x64;D:\_dev\C++\_frameworks\SDL2_ttf-2.20.2\lib\x64;D:\_dev\C++\_frameworks\SDL2_image-2.6.3\lib\x64;D:\_dev\C++\_frameworks\SDL2-2.28.4\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)_external\SDL2_image-2.6.3\include;$(SolutionDir)_external\SDL2_ttf-2.20.2\include;$(SolutionDir)_external\SDL2-2.28.4\include;D:\_dev\C++\_frameworks\SDL2_ttf-2.20.2\include;D:\_dev\C++\_frameworks\SDL2_image-2.6.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)_external\SDL2_image-2.6.3\lib\x64;$(SolutionDir)_external\SDL2_ttf-2.20.2\lib\x64;$(SolutionDir)_external\SDL2-2.28.4\lib\x64;D:\_dev\C++\_frameworks\SDL2_ttf-2.20.2\lib\x64;D:\_dev\C++\_frameworks\SDL2_image-2.6.3\lib\x64;D:\_dev\C++\_frameworks\SDL2-2.28.4\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\include;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\include;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
@@ -83,8 +83,8 @@
     <LibraryPath>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\lib\x64;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\lib\x64;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\lib\x64;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\include;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\include;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\lib\x64;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\lib\x64;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>$(SolutionDir)_external\SDL2_image-2.6.3\include;$(SolutionDir)_external\SDL2_ttf-2.20.2\include;$(SolutionDir)_external\SDL2-2.28.4\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(SolutionDir)_external\SDL2_image-2.6.3\lib\x64;$(SolutionDir)_external\SDL2_ttf-2.20.2\lib\x64;$(SolutionDir)_external\SDL2-2.28.4\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\include;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\include;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\include;D:\_dev\C++\_frameworks\SDL2_image-2.6.3\include;D:\_dev\C++\_frameworks\SDL2_ttf-2.20.2\include;D:\_dev\C++\_frameworks\SDL2-2.28.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)_external\SDL2_image-2.6.3\include;$(SolutionDir)_external\SDL2_ttf-2.20.2\include;$(SolutionDir)_external\SDL2-2.28.4\include;D:\_dev\C++\_frameworks\SDL2_image-2.6.3\include;D:\_dev\C++\_frameworks\SDL2_ttf-2.20.2\include;D:\_dev\C++\_frameworks\SDL2-2.28.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>F:\_dev\Cpp\_frameworks\SDL2_image-2.6.3\include;F:\_dev\Cpp\_frameworks\SDL2_ttf-2.20.2\include;F:\_dev\Cpp\_frameworks\SDL2-2.28.4\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)_external\SDL2_image-2.6.3\include;$(SolutionDir)_external\SDL2_ttf-2.20.2\include;$(SolutionDir)_external\SDL2-2.28.4\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,16 +151,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="classes\Piece.cpp" />
     <ClCompile Include="classes\Renderer.cpp" />
     <ClCompile Include="classes\screen\Game.cpp" />
     <ClCompile Include="classes\screen\Menu.cpp" />
     <ClCompile Include="Tetris.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="classes\Piece.h" />
     <ClInclude Include="classes\Renderer.h" />
     <ClInclude Include="classes\screen\Game.h" />
     <ClInclude Include="classes\screen\Menu.h" />
     <ClInclude Include="classes\screen\Screen.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="State.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
