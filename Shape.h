@@ -6,5 +6,6 @@ enum class Shape
 	TShape,
 	ZShape,
 	LShape,
+	IShape,
 	BoxShape
 };

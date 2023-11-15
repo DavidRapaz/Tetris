@@ -1,18 +1,32 @@
 #include "Game.h"
+
+// SDL Includes
 #include "SDL_keycode.h"
 #include "SDL_timer.h"
+
 #include "../Renderer.h"
 #include "../../State.h"
 #include "../../Color.h"
+
+// Piece Includes
+#include "../piece/Piece.h"
+#include "../piece/BoxShape.h"
+#include "../piece/IShape.h"
+#include "../piece/LShape.h"
+#include "../piece/ZShape.h"
+#include "../piece/TShape.h"
+
+// Include standard libs
 #include <iostream>
+#include "stdlib.h"
 
 // Define sizes and positions
 #define PIECE_SIZE 30
 #define BOARD_TOP_LEFT_X_POS 500
 #define BOARD_TOP_LEFT_Y_POS 50
 
-// Define velocities
-#define MAX_PERIOD 1000.f
+// Define the time in which the board is updated
+#define MAX_PERIOD 800.f
 
 Game::Game(Renderer* gameRenderer)
 {
@@ -25,8 +39,27 @@ Game::Game(Renderer* gameRenderer)
 	m_Blue   = m_Renderer->LoadTexture("./assets/images/lightblue.bmp");
 	m_Orange = m_Renderer->LoadTexture("./assets/images/orange.bmp");
 
-	// Initialize a piece
-	currentPiece = Piece();
+	// Initialize a random piece
+	std::srand(5);
+	switch (rand() % 5 + 1)
+	{
+	case 1: // TShape
+		currentPiece = new TShape();
+		break;
+	case 2: // ZShape
+		currentPiece = new ZShape();
+		break;
+	case 3: // LShape
+		currentPiece = new LShape();
+		break;
+	case 4: // IShape
+		currentPiece = new IShape();
+		break;
+	case 5: // BoxShape
+		currentPiece = new BoxShape();
+		break;
+	}
+	//currentPiece = Piece();
 
 	// Intialize time management variables
 	lastFrame = 0;
@@ -65,11 +98,11 @@ void Game::HandleEvents(State& gameState)
 void Game::UpdateBoard(bool clear)
 {
 	int pieceIndex    = 0;
-	Color updateColor = clear ? Color::None : currentPiece.GetPieceColor();
+	Color updateColor = clear ? Color::None : currentPiece->GetPieceColor();
 
 	for (int index = 0; index < 4; index++)
 	{
-		pieceIndex = currentPiece.position[index];
+		pieceIndex = currentPiece->position[index];
 		
 		if (pieceIndex > -1)
 		{
@@ -167,6 +200,6 @@ void Game::Draw()
 		UpdateBoard(true);
 
 		// After draw update the current piece position
-		currentPiece.UpdatePosition();
+		currentPiece->UpdatePosition();
 	}
 }

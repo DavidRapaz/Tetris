@@ -1,6 +1,6 @@
 #pragma once
 #include "Screen.h"
-#include "../Piece.h"
+#include "../piece/Piece.h"
 
 class Renderer;
 
@@ -33,7 +33,7 @@ private:
 		* m_Orange;
 
 	// Stores the current playing piece
-	Piece currentPiece;
+	Piece* currentPiece;
 
 	// Time management variables
 	float time,
