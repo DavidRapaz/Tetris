@@ -5,11 +5,18 @@
 // STD Includes
 #include "stdlib.h"
 
+#include <ctime>
+
 LShape::LShape()
 {
+	// Define a new seed of the column selection
+	srand(std::time(nullptr));
 
 	//Define start column 
 	column = rand() % 9 + 1;
+
+	// Define a new seed for the piece color render
+	srand(std::time(nullptr));
 
 	// Define which color is the piece
 	switch (rand() % 4 + 1)

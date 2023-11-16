@@ -4,6 +4,8 @@
 
 class Renderer;
 
+struct SDL_Keysym;
+
 enum class State;
 enum class Color;
 
@@ -40,11 +42,39 @@ private:
 		lastFrame,
 		timeStep;
 
+	// Controls whether to generate a new piece or not
+	bool newPiece = false;
+
 	/// <summary>
 	/// Updates the board with the current piece position
 	/// or clears the previous piece position
 	/// </summary>
 	void UpdateBoard(bool clear = false);
+
+	/// <summary>
+	/// Handle the events when a user presses a key or 
+	/// stops pressing it
+	/// </summary>
+	/// <param name="key"></param>
+	/// <param name="keyUp"></param>
+	void HandleKeyEvents(SDL_Keysym key, bool keyUp = false);
+
+	/// <summary>
+	/// Validates if the current piece can still move or 
+	/// if it's movement is locked and updates newPiece variable
+	/// </summary>
+	void CheckForPieceLocked();
+
+	/// <summary>
+	/// Generates a new piece
+	/// </summary>
+	void GenerateNewPiece();
+
+	/// <summary>
+	/// Validades if the user cannot make any more moves
+	/// </summary>
+	/// <returns></returns>
+	bool CheckIfGameOver();
 
 	/// <summary>
 	/// Draws the game board

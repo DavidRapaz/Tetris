@@ -151,14 +151,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="classes\Piece.cpp" />
+    <ClCompile Include="classes\piece\BoxShape.cpp" />
+    <ClCompile Include="classes\piece\IShape.cpp" />
+    <ClCompile Include="classes\piece\LShape.cpp" />
+    <ClCompile Include="classes\piece\TShape.cpp" />
+    <ClCompile Include="classes\piece\ZShape.cpp" />
     <ClCompile Include="classes\Renderer.cpp" />
     <ClCompile Include="classes\screen\Game.cpp" />
     <ClCompile Include="classes\screen\Menu.cpp" />
     <ClCompile Include="Tetris.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="classes\Piece.h" />
+    <ClInclude Include="classes\piece\BoxShape.h" />
+    <ClInclude Include="classes\piece\IShape.h" />
+    <ClInclude Include="classes\piece\LShape.h" />
+    <ClInclude Include="classes\piece\Piece.h" />
+    <ClInclude Include="classes\piece\TShape.h" />
+    <ClInclude Include="classes\piece\ZShape.h" />
     <ClInclude Include="classes\Renderer.h" />
     <ClInclude Include="classes\screen\Game.h" />
     <ClInclude Include="classes\screen\Menu.h" />

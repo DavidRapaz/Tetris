@@ -8,7 +8,7 @@ class Piece
 public:
 	Piece() {};
 	~Piece() {};
-	
+
 	/// <summary>
 	/// Updates the position of each block of the piece
 	/// considering it's shape and a given rotation
@@ -25,8 +25,8 @@ public:
 		for (int index = 0; index < 4; index++)
 		{
 			/*
-			 * Validate if the new coordinate won't be bigger 
-			 * than the max coordinate of the game board 
+			 * Validate if the new coordinate won't be bigger
+			 * than the max coordinate of the game board
 			 * declared in the Game class
 			 */
 			if (position[index] + 10 <= 199)
@@ -44,14 +44,22 @@ public:
 	void UpdateColumn(int direction)
 	{
 		/*
-		 * TODO:
-		 * 
-		 * - Validade if the piece is already 
-		 * on the edge of the board
-		 * 
-		 * - If the piece is not on the edge
-		 * update the piece column
+		 * Each row goes from 0 to 9
+		 * which means it's 10 indexes per row
+		 * so if we do the modulus of the current position
+		 * by 10 we know if it's in the edge if the result is either 0 or 9
 		 */
+		for (int index = 0; index < 4; index++)
+		{
+			if (position[0] % 10 == 0 || position[0] % 10 == 9)
+				return;
+		}
+
+		// Update piece position
+		for (int index = 0; index < 4; index++)
+		{
+			position[index] += direction;
+		}
 	}
 
 	/// <summary>
@@ -63,7 +71,8 @@ public:
 		return pieceColor;
 	}
 
-	int position[4]; // Stores the coordinates for each block of the piece
+	// Stores the coordinates for each block of the piece
+	int position[4];
 protected:
 	// Define the piece color
 	Color pieceColor;
