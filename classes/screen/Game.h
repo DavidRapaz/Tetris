@@ -1,8 +1,8 @@
 #pragma once
 #include "Screen.h"
-#include "../piece/Piece.h"
 
 class Renderer;
+class Piece;
 
 struct SDL_Keysym;
 

@@ -9,12 +9,7 @@
 #include "../../Color.h"
 
 // Piece Includes
-#include "../piece/Piece.h"
-#include "../piece/BoxShape.h"
-#include "../piece/IShape.h"
-#include "../piece/LShape.h"
-#include "../piece/ZShape.h"
-#include "../piece/TShape.h"
+#include "../Piece.h"
 
 // Include standard libs
 #include <iostream>
@@ -63,26 +58,8 @@ void Game::GenerateNewPiece()
 {
 	newPiece = false;
 
-	// Initialize a random piece
-	srand(std::time(nullptr));
-	switch (rand() % 5 + 1)
-	{
-	case 1: // TShape
-		currentPiece = new TShape();
-		break;
-	case 2: // ZShape
-		currentPiece = new ZShape();
-		break;
-	case 3: // LShape
-		currentPiece = new LShape();
-		break;
-	case 4: // IShape
-		currentPiece = new IShape();
-		break;
-	case 5: // BoxShape
-		currentPiece = new BoxShape();
-		break;
-	}
+	// Initialize a random new piece
+	currentPiece = new Piece();
 }
 
 // ---- INITIALIZATION METHODS
