@@ -42,8 +42,11 @@ private:
 		lastFrame,
 		timeStep;
 
-	// Controls whether to generate a new piece or not
-	bool newPiece = false;
+	// Control variables
+	// bool newPiece = false; // Controls whether to generate a new piece or not
+	// bool updateColumn = false; // Controls whether to update a piece column or not
+	// 
+	// int targetDirection;
 
 	/// <summary>
 	/// Updates the board with the current piece position
@@ -69,6 +72,13 @@ private:
 	/// Generates a new piece
 	/// </summary>
 	void GenerateNewPiece();
+
+	/// <summary>
+	/// Checks if the current piece 
+	/// can be updated to the new column
+	/// </summary>
+	/// <returns></returns>
+	bool CheckIfColumnAvailable();
 
 	/// <summary>
 	/// Validades if the user cannot make any more moves

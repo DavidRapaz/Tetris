@@ -15,6 +15,7 @@ Piece::Piece()
 	// Define start column
 	srand(std::time(nullptr));
 	column = rand() % 10; // each row goes from 0 to 9
+
 	// Define piece color
 	srand(std::time(nullptr));
 	pieceColor = static_cast<Color>(rand() % 4 + 1);
@@ -41,6 +42,8 @@ Piece::Piece()
 		BoxShapeInit();
 		break;
 	}
+
+	rotation = 0;
 }
 
 /// <summary>
@@ -49,6 +52,9 @@ Piece::Piece()
 /// </summary>
 void Piece::TShapeInit()
 {
+	if (column > 7)
+		column = 7;
+
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
 	position[0] = -10 + column; // This represents the block of the piece most to the left side
@@ -63,6 +69,9 @@ void Piece::TShapeInit()
 /// </summary>
 void Piece::ZShapeInit()
 {
+	if (column > 8)
+		column = 8;
+
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
 	position[0] = -10 + column; // This represents the block of the piece most to the left side
@@ -77,6 +86,9 @@ void Piece::ZShapeInit()
 /// </summary>
 void Piece::LShapeInit()
 {
+	if (column > 8)
+		column = 8;
+
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
 	position[0] = -20 + column; // This represents the block of the piece most to the left side
@@ -105,6 +117,9 @@ void Piece::IShapeInit()
 /// </summary>
 void Piece::BoxShapeInit()
 {
+	if (column > 8)
+		column = 8;
+
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
 	position[0] = -10 + column; // This represents the block of the piece most to the left side
@@ -120,17 +135,21 @@ Piece::~Piece()
 
 // ---- PIECE MOVEMENT METHODS
 
-void Piece::UpdateColumn(int direction)
+void Piece::UpdateColumn(int& direction)
 {
 	/*
 	 * Each row goes from 0 to 9
 	 * which means it's 10 indexes per row
-	 * so if we do the modulus of the current position
-	 * by 10 we know if it's in the edge if the result is either 0 or 9
+	 * so by doing the modulus of the current position
+	 * by 10 we know it's in the edge if the result is either 0 or 9
 	 */
 	for (int index = 0; index < 4; index++)
 	{
-		if (position[0] % 10 == 0 || position[0] % 10 == 9)
+		if (
+			(position[index] % 10 == 0 && direction == -1) || 
+			(position[index] % 10 == 9 && direction == 1) ||
+			(position[index] + direction > 199)
+		)
 			return;
 	}
 

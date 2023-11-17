@@ -27,7 +27,7 @@ public:
 	/// using a param direction to choose between left and right
 	/// </summary>
 	/// <param name="direction"></param>
-	void UpdateColumn(int direction);
+	void UpdateColumn(int& direction);
 
 	/// <summary>
 	/// Get the color of the piece

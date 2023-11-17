@@ -23,7 +23,13 @@
 #define BOARD_TOP_LEFT_Y_POS 50
 
 // Define the time in which the board is updated
-#define MAX_PERIOD 800.f
+#define MAX_PERIOD 600.f
+
+// GLOBAL VARS
+bool newPiece     = false;
+bool updateColumn = false;
+
+int targetDirection = 0;
 
 Game::Game(Renderer* gameRenderer)
 {
@@ -63,6 +69,35 @@ void Game::GenerateNewPiece()
 }
 
 // ---- INITIALIZATION METHODS
+
+// ---- VALIDATIONS METHODS
+
+bool Game::CheckIfColumnAvailable()
+{
+	for (int index = 0; index < 4; index++)
+	{
+		int pieceNextColumn = currentPiece->position[index] + targetDirection;
+
+		// Validates if there exists a block on the target column and if that block doesn't belong to the current piece
+		if (
+			m_Board[pieceNextColumn] != Color::None &&
+			currentPiece->position[0] != pieceNextColumn &&
+			currentPiece->position[1] != pieceNextColumn &&
+			currentPiece->position[2] != pieceNextColumn &&
+			currentPiece->position[3] != pieceNextColumn
+		)
+			return false;
+	}
+
+	return true;
+}
+
+bool Game::CheckIfGameOver()
+{
+	return false;
+}
+
+// ---- VALIDATIONS METHODS
 
 // ---- GAME LOGIC METHODS
 
@@ -121,21 +156,13 @@ void Game::HandleKeyEvents(SDL_Keysym key, bool keyUp)
 		break;
 	case SDLK_RIGHT: // Piece movement to the right
 	case SDLK_d:
-		// Clear the previous positions
-		UpdateBoard(true);
-
-		// Update the piece to the new column
-		currentPiece->UpdateColumn(1);
+		updateColumn    = true;
+		targetDirection = 1;
 		break;
 	case SDLK_LEFT: // Piece movement to the left
 	case SDLK_a:
-		// Clear the previous positions
-		UpdateBoard(true);
-
-		// Update the piece to the new column
-		currentPiece->UpdateColumn(-1);
-		break;
-	default:
+		updateColumn    = true;
+		targetDirection = -1;
 		break;
 	}
 }
@@ -263,6 +290,23 @@ void Game::Draw()
 	UpdateBoard();
 	DrawBoard();
 	CheckForPieceLocked();
+
+	/*
+	* Update the column if the current 
+	* piece is not already locked
+	*/
+	if (!newPiece && updateColumn)
+	{
+		if (CheckIfColumnAvailable())
+		{
+			UpdateBoard(true);
+			currentPiece->UpdateColumn(targetDirection);
+		}
+
+		// Reset control variables
+		updateColumn    = false;
+		targetDirection = 0;
+	}
 
 	/*
 	* Check if the time between the current time and the last frame
