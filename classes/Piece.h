@@ -10,8 +10,7 @@ public:
 	~Piece();
 
 	/// <summary>
-	/// Updates the position of each block of the piece
-	/// considering it's shape and a given rotation
+	/// Defines which piece function is called to rotate the piece
 	/// </summary>
 	/// <param name="rotation"></param>
 	void Rotate(int rotation);
@@ -74,14 +73,14 @@ private:
 	// ---- L SHAPE SPECIFIC METHODS
 	
 	void LShapeInit();
-	void LShapeRotate();
+	void LShapeRotate(int& rotation);
 
 	// ---- L SHAPE SPECIFIC METHODS
 
 	// ---- BOX SHAPE SPECIFIC METHODS
 	
 	void BoxShapeInit();
-	void BoxShapeRotate();
+	void BoxShapeRotate(int& rotation);
 	
 	// ---- BOX SHAPE SPECIFIC METHODS
 };

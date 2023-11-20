@@ -6,6 +6,7 @@
 // STD Includes
 #include "stdlib.h"
 
+#include <algorithm>
 #include <ctime>
 
 // ---- INITIALIZATION METHODS
@@ -176,7 +177,104 @@ void Piece::UpdatePosition()
 	}
 }
 
+/// <summary>
+/// Defines which piece function is called to rotate the piece
+/// </summary>
+/// <param name="rotation"></param>
 void Piece::Rotate(int rotation)
+{
+	// rotation = std::clamp(rotation, -1, 1);
+
+	switch (pieceShape)
+	{
+	case Shape::TShape:
+		TShapeRotate(rotation);
+		break;
+	case Shape::ZShape:
+		ZShapeRotate(rotation);
+		break;
+	case Shape::LShape:
+		LShapeRotate(rotation);
+		break;
+	case Shape::IShape:
+		IShapeRotate(rotation);
+		break;
+	}
+}
+
+/// <summary>
+/// Rotates the T Shape piece since -1 = -90º and 1 = 90º
+/// In the shape every piece rotates around the base of the T
+/// which means only the 3 first indexes need to be updated
+/// </summary>
+/// <param name="rotation"></param>
+void Piece::TShapeRotate(int& rotation)
+{
+	this->rotation += rotation * 90;
+	
+	// Reset to 0 when does a full circle
+	if (this->rotation >= 360 || this->rotation <= -360) 
+		this->rotation = 0;
+	
+	// Multiply by 1 or -1 to always return a positive number
+	int sector = (rotation * this->rotation) / 90;
+
+	/*
+	* Sector 0 = 0º
+	* Sector 1 = 90º
+	* Sector 2 = 180º
+	* Sector 3 = 270º
+	*/
+
+	// Control how much to increment to each position
+	// Make them with the default value of the base of the T shape
+	// Then we will use that position to consider the rotation values
+	int topLeft   = position[3],
+		topCenter = position[3],
+		topRight  = position[3];
+
+	// The sectors 1 and 3 change are different depending if it's rotating to the right or to the left
+	topLeft   += sector == 1 ? rotation * -9 : sector == 2 ? 11 : sector == 3 ? rotation * 9 : -11;
+	topCenter += sector == 1 ? rotation * 1 : sector == 2 ? 10 : sector == 3 ? rotation * -1 : -10;
+	topRight  += sector == 1 ? rotation * 11 : sector == 2 ? 9 : sector == 3 ? rotation * -11 : -9;
+
+	position[0] = topLeft;
+	position[1] = topCenter;
+	position[2] = topRight;
+}
+
+/// <summary>
+/// Rotates the Z Shape piece since -1 = -90º and 1 = 90º
+/// </summary>
+/// <param name="rotation"></param>
+void Piece::ZShapeRotate(int& rotation)
+{
+
+}
+
+/// <summary>
+/// Rotates the L Shape piece since -1 = -90º and 1 = 90º
+/// </summary>
+/// <param name="rotation"></param>
+void Piece::LShapeRotate(int& rotation)
+{
+
+}
+
+/// <summary>
+/// Rotates the I Shape piece since -1 = -90º and 1 = 90º
+/// </summary>
+/// <param name="rotation"></param>
+void Piece::IShapeRotate(int& rotation)
+{
+
+}
+
+/// <summary>
+/// Rotates the Box Shape piece since -1 = -90º and 1 = 90º
+/// </summary>
+/// <param name="rotation"></param>
+void Piece::BoxShapeRotate(int& rotation)
 {
 
 }
