@@ -63,15 +63,15 @@ private:
 	void HandleKeyEvents(SDL_Keysym key, bool keyUp = false);
 
 	/// <summary>
+	/// Generates a new piece
+	/// </summary>
+	void GenerateNewPiece();
+
+	/// <summary>
 	/// Validates if the current piece can still move or 
 	/// if it's movement is locked and updates newPiece variable
 	/// </summary>
 	void CheckForPieceLocked();
-
-	/// <summary>
-	/// Generates a new piece
-	/// </summary>
-	void GenerateNewPiece();
 
 	/// <summary>
 	/// Checks if the current piece 

@@ -25,11 +25,15 @@
 // Define the time in which the board is updated
 #define MAX_PERIOD 600.f
 
-// GLOBAL VARS
-bool newPiece     = false;
-bool updateColumn = false;
+// CONTROL VARS
+bool newPiece    = false,
+	updateColumn = false,
+	rotatePiece  = false,
+	isOnPause    = false;
 
-int targetDirection = 0;
+// NEW VALUES TARGET VARS
+int targetDirection = 0, 
+	targetRotation  = 0;
 
 Game::Game(Renderer* gameRenderer)
 {
@@ -164,6 +168,17 @@ void Game::HandleKeyEvents(SDL_Keysym key, bool keyUp)
 		updateColumn    = true;
 		targetDirection = -1;
 		break;
+	case SDLK_q: // Rotate left
+		rotatePiece    = true;
+		targetRotation = -1;
+		break;
+	case SDLK_e: // Rotate right
+		rotatePiece    = true;
+		targetRotation = 1;
+		break;
+	case SDLK_ESCAPE:
+		isOnPause = !isOnPause;
+		break;
 	}
 }
 
@@ -295,7 +310,7 @@ void Game::Draw()
 	* Update the column if the current 
 	* piece is not already locked
 	*/
-	if (!newPiece && updateColumn)
+	if (!newPiece && updateColumn && !isOnPause)
 	{
 		if (CheckIfColumnAvailable())
 		{
@@ -308,12 +323,21 @@ void Game::Draw()
 		targetDirection = 0;
 	}
 
+	if (!newPiece && rotatePiece && !isOnPause)
+	{
+		UpdateBoard(true);
+		currentPiece->Rotate(targetRotation);
+
+		rotatePiece    = false;
+		targetRotation = 0;
+	}
+
 	/*
 	* Check if the time between the current time and the last frame
 	* is greater than the max period given for a frame
 	* if it is then execute each time base functionality
 	*/
-	if (timeStep > MAX_PERIOD)
+	if (timeStep > MAX_PERIOD && !isOnPause)
 	{
 		lastFrame = time;
 
