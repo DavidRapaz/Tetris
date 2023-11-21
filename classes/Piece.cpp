@@ -69,7 +69,7 @@ void Piece::ZShapeInit()
 {
 	// Define start column
 	srand(std::time(nullptr));
-	column = rand() % 9; // due to it's shape can only be inserted between 0 and 9 columns
+	column = rand() % 8; // due to it's shape can only be inserted between 0 and 8 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
@@ -187,6 +187,12 @@ void Piece::UpdatePosition()
 /// <param name="rotation"></param>
 void Piece::Rotate(int rotation)
 {
+	/*
+	* TODO:
+	* - Add validations to see 
+	* if can rotate
+	*/
+
 	// Force rotation to be between 0 and 360 never negative numbers
 	if (this->rotation == 0 && rotation == -1)
 		this->rotation = 270;
@@ -209,16 +215,16 @@ void Piece::Rotate(int rotation)
 	switch (pieceShape)
 	{
 	case Shape::TShape:
-		TShapeRotate(rotation, sector);
+		TShapeRotate(sector);
 		break;
 	case Shape::ZShape:
-		ZShapeRotate(rotation, sector);
+		ZShapeRotate(sector);
 		break;
 	case Shape::LShape:
-		LShapeRotate(rotation, sector);
+		LShapeRotate(sector);
 		break;
 	case Shape::IShape:
-		IShapeRotate(rotation, sector);
+		IShapeRotate(sector);
 		break;
 	}
 }
@@ -229,7 +235,7 @@ void Piece::Rotate(int rotation)
 /// which means only the 3 first indexes need to be updated
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::TShapeRotate(int& rotation, int& sector)
+void Piece::TShapeRotate(int& sector)
 {
 	// Control how much to increment to each position
 	// Make them with the default value of the base of the T shape
@@ -250,10 +256,10 @@ void Piece::TShapeRotate(int& rotation, int& sector)
 /// <summary>
 /// Rotates the Z Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
-/// <param name="rotation"></param>
-void Piece::ZShapeRotate(int& rotation, int& sector)
+/// <param name="sector"></param>
+void Piece::ZShapeRotate(int& sector)
 {
-	// The center of the Z Shape piece is the index 2
+	// The center of the Z Shape piece is at the index 2
 	int topLeft     = position[2], // The piece at the top most to the left
 		topCenter   = position[2], // The piece at the top on the center
 		bottomRight = position[2]; // The piece at the bottom most to the right
@@ -271,27 +277,40 @@ void Piece::ZShapeRotate(int& rotation, int& sector)
 /// Rotates the L Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::LShapeRotate(int& rotation, int& sector)
+void Piece::LShapeRotate(int& sector)
 {
+	// The center of the L Shape piece is at the index 2
+	int topMax      = position[2],
+		topCenter   = position[2],
+		bottomRight = position[2];
 
+	topMax      += sector == 1 ? 2 : sector == 2 ? 20 : sector == 3 ? -2 : -20;
+	topCenter   += sector == 1 ? 1 : sector == 2 ? 10 : sector == 3 ? -1 : -10;
+	bottomRight += sector == 1 ? 10 : sector == 2 ? -1 : sector == 3 ? -10 : 1;
+
+	position[0] = topMax;
+	position[1] = topCenter;
+	position[3] = bottomRight;
 }
 
 /// <summary>
 /// Rotates the I Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::IShapeRotate(int& rotation, int& sector)
+void Piece::IShapeRotate(int& sector)
 {
+	// The center of the I Shape piece is at the index 3
+	int topMax    = position[3],
+		topCenter = position[3],
+		topMin    = position[3];
 
-}
+	topMax    += sector == 1 ? 3 : sector == 2 ? 30 : sector == 3 ? -3 : -30;
+	topCenter += sector == 1 ? 2 : sector == 2 ? 20 : sector == 3 ? -2 : -20;
+	topMin    += sector == 1 ? 1 : sector == 2 ? 10 : sector == 3 ? -1 : -10;
 
-/// <summary>
-/// Rotates the Box Shape piece since -1 = -90º and 1 = 90º
-/// </summary>
-/// <param name="rotation"></param>
-void Piece::BoxShapeRotate(int& rotation, int& sector)
-{
-
+	position[0] = topMax;
+	position[1] = topCenter;
+	position[2] = topMin;
 }
 
 // ---- PIECE MOVEMENT METHODS
