@@ -52,35 +52,35 @@ private:
 	// ---- Z SHAPE SPECIFIC METHODS
 
 	void ZShapeInit();
-	void ZShapeRotate(int& rotation);
+	void ZShapeRotate(int& rotation, int& sector);
 
 	// ---- Z SHAPE SPECIFIC METHODS
 
 	// ---- T SHAPE SPECIFIC METHODS
 
 	void TShapeInit();
-	void TShapeRotate(int& rotation);
+	void TShapeRotate(int& rotation, int& sector);
 
 	// ---- T SHAPE SPECIFIC METHODS
 
 	// ---- I SHAPE SPECIFIC METHODS
 
 	void IShapeInit();
-	void IShapeRotate(int& rotation);
+	void IShapeRotate(int& rotation, int& sector);
 
 	// ---- I SHAPE SPECIFIC METHODS
 
 	// ---- L SHAPE SPECIFIC METHODS
 	
 	void LShapeInit();
-	void LShapeRotate(int& rotation);
+	void LShapeRotate(int& rotation, int& sector);
 
 	// ---- L SHAPE SPECIFIC METHODS
 
 	// ---- BOX SHAPE SPECIFIC METHODS
 	
 	void BoxShapeInit();
-	void BoxShapeRotate(int& rotation);
+	void BoxShapeRotate(int& rotation, int& sector);
 	
 	// ---- BOX SHAPE SPECIFIC METHODS
 };

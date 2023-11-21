@@ -183,21 +183,38 @@ void Piece::UpdatePosition()
 /// <param name="rotation"></param>
 void Piece::Rotate(int rotation)
 {
-	// rotation = std::clamp(rotation, -1, 1);
+	// Force rotation to be between 0 and 360 never negative numbers
+	if (this->rotation == 0 && rotation == -1)
+		this->rotation = 270;
+	else
+		this->rotation += rotation * 90;
+
+	// Reset to 0 when does a full circle
+	if (this->rotation == 360)
+		this->rotation = 0;
+
+	/*
+	* Sector 0 = 0º
+	* Sector 1 = 90º
+	* Sector 2 = 180º
+	* Sector 3 = 270º
+	*/
+
+	int sector = this->rotation / 90;
 
 	switch (pieceShape)
 	{
 	case Shape::TShape:
-		TShapeRotate(rotation);
+		TShapeRotate(rotation, sector);
 		break;
 	case Shape::ZShape:
-		ZShapeRotate(rotation);
+		ZShapeRotate(rotation, sector);
 		break;
 	case Shape::LShape:
-		LShapeRotate(rotation);
+		LShapeRotate(rotation, sector);
 		break;
 	case Shape::IShape:
-		IShapeRotate(rotation);
+		IShapeRotate(rotation, sector);
 		break;
 	}
 }
@@ -208,24 +225,8 @@ void Piece::Rotate(int rotation)
 /// which means only the 3 first indexes need to be updated
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::TShapeRotate(int& rotation)
+void Piece::TShapeRotate(int& rotation, int& sector)
 {
-	this->rotation += rotation * 90;
-	
-	// Reset to 0 when does a full circle
-	if (this->rotation >= 360 || this->rotation <= -360) 
-		this->rotation = 0;
-	
-	// Multiply by 1 or -1 to always return a positive number
-	int sector = (rotation * this->rotation) / 90;
-
-	/*
-	* Sector 0 = 0º
-	* Sector 1 = 90º
-	* Sector 2 = 180º
-	* Sector 3 = 270º
-	*/
-
 	// Control how much to increment to each position
 	// Make them with the default value of the base of the T shape
 	// Then we will use that position to consider the rotation values
@@ -234,9 +235,9 @@ void Piece::TShapeRotate(int& rotation)
 		topRight  = position[3];
 
 	// The sectors 1 and 3 change are different depending if it's rotating to the right or to the left
-	topLeft   += sector == 1 ? rotation * -9 : sector == 2 ? 11 : sector == 3 ? rotation * 9 : -11;
-	topCenter += sector == 1 ? rotation * 1 : sector == 2 ? 10 : sector == 3 ? rotation * -1 : -10;
-	topRight  += sector == 1 ? rotation * 11 : sector == 2 ? 9 : sector == 3 ? rotation * -11 : -9;
+	topLeft   += sector == 1 ? -9 : sector == 2 ? 11 : sector == 3 ? 9 : -11;
+	topCenter += sector == 1 ? 1 : sector == 2 ? 10 : sector == 3 ? -1 : -10;
+	topRight  += sector == 1 ? 11 : sector == 2 ? 9 : sector == 3 ? -11 : -9;
 
 	position[0] = topLeft;
 	position[1] = topCenter;
@@ -247,7 +248,7 @@ void Piece::TShapeRotate(int& rotation)
 /// Rotates the Z Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::ZShapeRotate(int& rotation)
+void Piece::ZShapeRotate(int& rotation, int& sector)
 {
 
 }
@@ -256,7 +257,7 @@ void Piece::ZShapeRotate(int& rotation)
 /// Rotates the L Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::LShapeRotate(int& rotation)
+void Piece::LShapeRotate(int& rotation, int& sector)
 {
 
 }
@@ -265,7 +266,7 @@ void Piece::LShapeRotate(int& rotation)
 /// Rotates the I Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::IShapeRotate(int& rotation)
+void Piece::IShapeRotate(int& rotation, int& sector)
 {
 
 }
@@ -274,7 +275,7 @@ void Piece::IShapeRotate(int& rotation)
 /// Rotates the Box Shape piece since -1 = -90º and 1 = 90º
 /// </summary>
 /// <param name="rotation"></param>
-void Piece::BoxShapeRotate(int& rotation)
+void Piece::BoxShapeRotate(int& rotation, int& sector)
 {
 
 }
