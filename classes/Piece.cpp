@@ -13,10 +13,6 @@
 
 Piece::Piece()
 {
-	// Define start column
-	srand(std::time(nullptr));
-	column = rand() % 10; // each row goes from 0 to 9
-
 	// Define piece color
 	srand(std::time(nullptr));
 	pieceColor = static_cast<Color>(rand() % 4 + 1);
@@ -53,8 +49,9 @@ Piece::Piece()
 /// </summary>
 void Piece::TShapeInit()
 {
-	if (column > 7)
-		column = 7;
+	// Define start column
+	srand(std::time(nullptr));
+	column = rand() % 8; // due to it's shape can only be inserted between 0 and 7 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
@@ -70,8 +67,9 @@ void Piece::TShapeInit()
 /// </summary>
 void Piece::ZShapeInit()
 {
-	if (column > 8)
-		column = 8;
+	// Define start column
+	srand(std::time(nullptr));
+	column = rand() % 9; // due to it's shape can only be inserted between 0 and 9 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
@@ -87,14 +85,15 @@ void Piece::ZShapeInit()
 /// </summary>
 void Piece::LShapeInit()
 {
-	if (column > 8)
-		column = 8;
+	// Define start column
+	srand(std::time(nullptr));
+	column = rand() % 9; // due to it's shape can only be inserted between 0 and 9 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
 	position[0] = -20 + column; // This represents the block of the piece most to the left side
 	position[1] = -10 + column;
-	position[2] = -0 + column;
+	position[2] = 0 + column;
 	position[3] = 1 + column;
 }
 
@@ -103,7 +102,11 @@ void Piece::LShapeInit()
 /// pieces for the I shape
 /// </summary>
 void Piece::IShapeInit()
-{	
+{
+	// Define start column
+	srand(std::time(nullptr));
+	column = rand() % 10; // can start at any column
+
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
 	position[0] = -30 + column; // This represents the block of the piece most to the left side
@@ -118,8 +121,9 @@ void Piece::IShapeInit()
 /// </summary>
 void Piece::BoxShapeInit()
 {
-	if (column > 8)
-		column = 8;
+	// Define start column
+	srand(std::time(nullptr));
+	column = rand() % 7; // due to it's shape can only be inserted between 0 and 7 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
@@ -234,7 +238,6 @@ void Piece::TShapeRotate(int& rotation, int& sector)
 		topCenter = position[3],
 		topRight  = position[3];
 
-	// The sectors 1 and 3 change are different depending if it's rotating to the right or to the left
 	topLeft   += sector == 1 ? -9 : sector == 2 ? 11 : sector == 3 ? 9 : -11;
 	topCenter += sector == 1 ? 1 : sector == 2 ? 10 : sector == 3 ? -1 : -10;
 	topRight  += sector == 1 ? 11 : sector == 2 ? 9 : sector == 3 ? -11 : -9;
@@ -250,7 +253,18 @@ void Piece::TShapeRotate(int& rotation, int& sector)
 /// <param name="rotation"></param>
 void Piece::ZShapeRotate(int& rotation, int& sector)
 {
+	// The center of the Z Shape piece is the index 2
+	int topLeft     = position[2], // The piece at the top most to the left
+		topCenter   = position[2], // The piece at the top on the center
+		bottomRight = position[2]; // The piece at the bottom most to the right
 
+	topLeft     += sector == 1 ? -9 : sector == 2 ? 11 : sector == 3 ? 9 : -11;
+	topCenter   += sector == 1 ? 1 : sector == 2 ? 10 : sector == 3 ? -1 : -10;
+	bottomRight += sector == 1 ? 10 : sector == 2 ? -1 : sector == 3 ? -10 : 1;
+
+	position[0] = topLeft;
+	position[1] = topCenter;
+	position[3] = bottomRight;
 }
 
 /// <summary>
