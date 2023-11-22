@@ -21,6 +21,8 @@ Piece::Piece()
 	srand(std::time(nullptr));
 	pieceShape = static_cast<Shape>(rand() % 5 + 1);
 
+	// Define starting column of the piece
+	srand(std::time(nullptr));
 	switch (pieceShape)
 	{
 	case Shape::TShape:
@@ -49,8 +51,6 @@ Piece::Piece()
 /// </summary>
 void Piece::TShapeInit()
 {
-	// Define start column
-	srand(std::time(nullptr));
 	column = rand() % 8; // due to it's shape can only be inserted between 0 and 7 columns
 
 	// Define piece positions
@@ -67,9 +67,7 @@ void Piece::TShapeInit()
 /// </summary>
 void Piece::ZShapeInit()
 {
-	// Define start column
-	srand(std::time(nullptr));
-	column = rand() % 8; // due to it's shape can only be inserted between 0 and 8 columns
+	column = rand() % 8; // due to it's shape can only be inserted between 0 and 7 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
@@ -85,8 +83,6 @@ void Piece::ZShapeInit()
 /// </summary>
 void Piece::LShapeInit()
 {
-	// Define start column
-	srand(std::time(nullptr));
 	column = rand() % 9; // due to it's shape can only be inserted between 0 and 9 columns
 
 	// Define piece positions
@@ -103,8 +99,6 @@ void Piece::LShapeInit()
 /// </summary>
 void Piece::IShapeInit()
 {
-	// Define start column
-	srand(std::time(nullptr));
 	column = rand() % 10; // can start at any column
 
 	// Define piece positions
@@ -121,9 +115,7 @@ void Piece::IShapeInit()
 /// </summary>
 void Piece::BoxShapeInit()
 {
-	// Define start column
-	srand(std::time(nullptr));
-	column = rand() % 7; // due to it's shape can only be inserted between 0 and 7 columns
+	column = rand() % 9; // due to it's shape can only be inserted between 0 and 8 columns
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
@@ -187,11 +179,8 @@ void Piece::UpdatePosition()
 /// <param name="rotation"></param>
 void Piece::Rotate(int rotation)
 {
-	/*
-	* TODO:
-	* - Add validations to see 
-	* if can rotate
-	*/
+	// Update the previous rotation
+	this->previousRotation = this->rotation;
 
 	// Force rotation to be between 0 and 360 never negative numbers
 	if (this->rotation == 0 && rotation == -1)
@@ -237,6 +226,16 @@ void Piece::Rotate(int rotation)
 /// <param name="rotation"></param>
 void Piece::TShapeRotate(int& sector)
 {
+	// Check if the position of the base is almost at
+	if (
+		(position[3] % 10 >= 8 && sector == 1) ||
+		(position[3] % 10 <= 1 && sector == 3)
+	)
+	{
+		this->rotation = this->previousRotation;
+		return;
+	}
+
 	// Control how much to increment to each position
 	// Make them with the default value of the base of the T shape
 	// Then we will use that position to consider the rotation values
@@ -259,6 +258,16 @@ void Piece::TShapeRotate(int& sector)
 /// <param name="sector"></param>
 void Piece::ZShapeRotate(int& sector)
 {
+	// Check if the position of the base is almost at
+	if (
+		(position[2] % 10 >= 9 && sector == 1) ||
+		(position[2] % 10 <= 0 && sector == 3)
+		)
+	{
+		this->rotation = this->previousRotation;
+		return;
+	}
+
 	// The center of the Z Shape piece is at the index 2
 	int topLeft     = position[2], // The piece at the top most to the left
 		topCenter   = position[2], // The piece at the top on the center
@@ -279,6 +288,16 @@ void Piece::ZShapeRotate(int& sector)
 /// <param name="rotation"></param>
 void Piece::LShapeRotate(int& sector)
 {
+	// Check if the position of the base is almost at
+	if (
+		(position[2] % 10 >= 8 && sector == 1) ||
+		(position[2] % 10 <= 1 && sector == 3)
+	)
+	{
+		this->rotation = this->previousRotation;
+		return;
+	}
+
 	// The center of the L Shape piece is at the index 2
 	int topMax      = position[2],
 		topCenter   = position[2],
@@ -299,6 +318,16 @@ void Piece::LShapeRotate(int& sector)
 /// <param name="rotation"></param>
 void Piece::IShapeRotate(int& sector)
 {
+	// Check if the position of the base is almost at
+	if (
+		(position[3] % 10 >= 7 && sector == 1) || 
+		(position[3] % 10 <= 2 && sector == 3)
+	)
+	{
+		this->rotation = this->previousRotation;
+		return;
+	}
+
 	// The center of the I Shape piece is at the index 3
 	int topMax    = position[3],
 		topCenter = position[3],

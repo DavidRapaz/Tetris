@@ -328,6 +328,17 @@ void Game::Draw()
 		UpdateBoard(true);
 		currentPiece->Rotate(targetRotation);
 
+		// Validate if with the new rotation the target if over an already inserted piece
+		// If it exists then rotate back
+		for (int index = 0; index < 4; index++)
+		{
+			int pieceIndex = currentPiece->position[index];
+			if (m_Board[pieceIndex] != Color::None)
+			{
+				currentPiece->Rotate(-(targetRotation));
+			}
+		}
+
 		rotatePiece    = false;
 		targetRotation = 0;
 	}

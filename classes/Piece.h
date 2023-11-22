@@ -47,7 +47,7 @@ private:
 	int column;
 
 	// Stores the current piece rotation
-	int rotation;
+	int rotation, previousRotation;
 
 	// ---- Z SHAPE SPECIFIC METHODS
 
