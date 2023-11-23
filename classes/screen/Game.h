@@ -42,11 +42,11 @@ private:
 		lastFrame,
 		timeStep;
 
-	// Control variables
-	// bool newPiece = false; // Controls whether to generate a new piece or not
-	// bool updateColumn = false; // Controls whether to update a piece column or not
-	// 
-	// int targetDirection;
+	/// <summary>
+	/// Checks if a row is total filled, if it is then clears it and 
+	/// updates the position of the pieces above
+	/// </summary>
+	void ClearFilledRows();
 
 	/// <summary>
 	/// Updates the board with the current piece position

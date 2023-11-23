@@ -23,7 +23,7 @@
 #define BOARD_TOP_LEFT_Y_POS 50
 
 // Define the time in which the board is updated
-#define MAX_PERIOD 600.f
+#define MAX_PERIOD 400.f
 
 // CONTROL VARS
 bool newPiece    = false,
@@ -53,7 +53,7 @@ Game::Game(Renderer* gameRenderer)
 	timeStep  = 0;
 
 	// Initialize the board
-	memset(&m_Board, (int) Color::None, sizeof(int) * 200);
+	memset(&m_Board, static_cast<int>(Color::None), sizeof(int) * 200);
 }
 
 Game::~Game()
@@ -210,6 +210,54 @@ void Game::HandleEvents(State& gameState)
 // ---- GAME BOARD METHODS
 
 /// <summary>
+/// Checks if a row is total filled, if it is then clears it and 
+/// updates the position of the pieces above
+/// </summary>
+void Game::ClearFilledRows()
+{
+	int firstRowCleared = -1,
+		rowsCleared     = 0;
+
+	// Go from bottom to top to clear the rows
+	for (int row = 19; row >= 0; row--)
+	{
+		int totalPositionsFilled = 0,
+			offset               = row * 10;
+
+		// Check if all columns are filled
+		for (int column = 0; column < 10; column++)
+		{
+			if (m_Board[offset + column] != Color::None)
+				totalPositionsFilled++;
+		}
+
+		// Store the row, clear it and stores how many where cleared
+		if (totalPositionsFilled == 10)
+		{
+			memset(&m_Board[offset], static_cast<int>(Color::None), sizeof(int) * 10);
+			
+			if (firstRowCleared == -1)
+				firstRowCleared = row;
+
+			rowsCleared++;
+		}
+	}
+
+	/*
+	* Starting from the first row cleared
+	* we update every row above because the fist row cleared
+	* will always be the row most bellow
+	*/
+	for (int row = firstRowCleared; row >= 0; row--)
+	{
+		int offset         = row * 10,
+			offsetToUpdate = (row - rowsCleared) * 10;
+
+		memcpy(&m_Board[offset], &m_Board[offsetToUpdate], sizeof(int) * 10);
+	}
+}
+
+/// <summary>
 /// Updates the board with the current piece position
 /// or clear the piece previous position
 /// </summary>
@@ -362,6 +410,7 @@ void Game::Draw()
 		} else
 		{
 			GenerateNewPiece();
+			ClearFilledRows();
 		}
 	}
 }
