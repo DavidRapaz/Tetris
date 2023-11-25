@@ -23,7 +23,8 @@
 #define BOARD_TOP_LEFT_Y_POS 50
 
 // Define the time in which the board is updated
-#define MAX_PERIOD 400.f
+#define NORMAL_VELOCITY 400.f
+#define SPEEDING_VELOCITY 200.f
 
 // CONTROL VARS
 bool newPiece    = false,
@@ -35,8 +36,13 @@ bool newPiece    = false,
 int targetDirection = 0, 
 	targetRotation  = 0;
 
+float targetUpdateTime;
+
 Game::Game(Renderer* gameRenderer)
 {
+	// Set the default value of target update speed
+	targetUpdateTime = NORMAL_VELOCITY;
+
 	// Associate the renderer
 	m_Renderer = gameRenderer;
 
@@ -49,8 +55,8 @@ Game::Game(Renderer* gameRenderer)
 	GenerateNewPiece();
 
 	// Intialize time management variables
-	lastFrame = 0;
-	timeStep  = 0;
+	m_LastFrame = 0;
+	m_TimeStep  = 0;
 
 	// Initialize the board
 	memset(&m_Board, static_cast<int>(Color::None), sizeof(int) * 200);
@@ -157,26 +163,38 @@ void Game::HandleKeyEvents(SDL_Keysym key, bool keyUp)
 	{
 	case SDLK_DOWN: // Speed piece movement down 
 	case SDLK_s:
+	case SDLK_SPACE:
+		targetUpdateTime = keyUp ? NORMAL_VELOCITY : SPEEDING_VELOCITY;
 		break;
 	case SDLK_RIGHT: // Piece movement to the right
 	case SDLK_d:
+		if (keyUp) return;
+		
 		updateColumn    = true;
 		targetDirection = 1;
 		break;
 	case SDLK_LEFT: // Piece movement to the left
 	case SDLK_a:
+		if (keyUp) return;
+		
 		updateColumn    = true;
 		targetDirection = -1;
 		break;
 	case SDLK_q: // Rotate left
+		if (keyUp) return;
+		
 		rotatePiece    = true;
 		targetRotation = -1;
 		break;
 	case SDLK_e: // Rotate right
+		if (keyUp) return;
+		
 		rotatePiece    = true;
 		targetRotation = 1;
 		break;
 	case SDLK_ESCAPE:
+		if (keyUp) return;
+
 		isOnPause = !isOnPause;
 		break;
 	}
@@ -185,6 +203,7 @@ void Game::HandleKeyEvents(SDL_Keysym key, bool keyUp)
 /// <summary>
 /// Handle the screen events
 /// </summary>
+/// <param name="gameState"></param>
 void Game::HandleEvents(State& gameState)
 {
 	SDL_Event event;
@@ -199,10 +218,71 @@ void Game::HandleEvents(State& gameState)
 		case SDL_KEYDOWN:
 			HandleKeyEvents(event.key.keysym);
 			break;
+		case SDL_KEYUP:
+			HandleKeyEvents(event.key.keysym, true);
+			break;
 		default:
 			break;
 		}
 	}
+}
+
+/// <summary>
+/// Check where the piece is going to land
+/// </summary>
+void Game::PreviewPiecePosition()
+{
+	int highestRow = 19, // Initialize with the last row
+		blockRow   = -1;
+
+	/*
+	* Go through every block of the piece,
+	* check and store the row of the block and 
+	* the row where the collision occurs
+	*/
+	for (int index = 0; index < 4; index++)
+	{
+		int indexBlockRow    = currentPiece->position[index] / 10,
+			indexBlockColumn = currentPiece->position[index] % 10;
+
+		for (int row = indexBlockRow; row < 20; row++)
+		{
+			int boardPos = row * 10 + indexBlockColumn;
+			
+			/*
+			* A collision occurs when the target position
+			* is occupied by a block that does not belong to the current piece
+			*/
+			if (
+				(
+					m_Board[boardPos] != Color::None &&
+					boardPos != currentPiece->position[0] &&
+					boardPos != currentPiece->position[1] &&
+					boardPos != currentPiece->position[2] &&
+					boardPos != currentPiece->position[3]
+				)
+			)
+			{
+				highestRow = row - 1;
+				blockRow   = indexBlockRow;
+			}
+		}
+	}
+
+	if (blockRow == -1)
+	{
+
+	}
+
+	/*
+	* Now for every block of the piece
+	* we add the difference between the first block to collide row
+	* and the row previous to where there will be a collision
+	*/
+	m_PreviewedPositions[0] = currentPiece->position[0] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[1] = currentPiece->position[1] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[2] = currentPiece->position[2] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[3] = currentPiece->position[3] + (highestRow - blockRow) * 10;
 }
 
 // ---- EVENTS HANDLING METHODS
@@ -248,7 +328,7 @@ void Game::ClearFilledRows()
 	* we update every row above because the fist row cleared
 	* will always be the row most bellow
 	*/
-	for (int row = firstRowCleared; row >= 0; row--)
+	for (int row = firstRowCleared; row > rowsCleared; row--)
 	{
 		int offset         = row * 10,
 			offsetToUpdate = (row - rowsCleared) * 10;
@@ -274,6 +354,26 @@ void Game::UpdateBoard(bool clear)
 		{
 			m_Board[pieceIndex] = updateColor;
 		}
+	}
+}
+
+/// <summary>
+/// Draws on the screen the piece previewed position
+/// </summary>
+void Game::DrawPiecePreviewedPosition()
+{
+	for (int index = 0; index < 4; index++)
+	{
+		int column = m_PreviewedPositions[index] % 10,
+			row    = m_PreviewedPositions[index] / 10;
+
+		m_Renderer->RenderRect(
+			BOARD_TOP_LEFT_X_POS + (column * PIECE_SIZE),
+			BOARD_TOP_LEFT_Y_POS + (row * PIECE_SIZE),
+			PIECE_SIZE,
+			PIECE_SIZE,
+			{ 255, 0, 0, 255 }
+		);
 	}
 }
 
@@ -346,8 +446,8 @@ void Game::DrawBoard()
 void Game::Draw()
 { 
 	// Manage time
-	time     = (float)SDL_GetTicks();
-	timeStep = time - lastFrame;
+	m_Time     = (float)SDL_GetTicks();
+	m_TimeStep = m_Time - m_LastFrame;
 
 	// Updates the board with the current piece position
 	UpdateBoard();
@@ -391,14 +491,17 @@ void Game::Draw()
 		targetRotation = 0;
 	}
 
+	PreviewPiecePosition();
+	DrawPiecePreviewedPosition();
+
 	/*
 	* Check if the time between the current time and the last frame
 	* is greater than the max period given for a frame
 	* if it is then execute each time base functionality
 	*/
-	if (timeStep > MAX_PERIOD && !isOnPause)
+	if (m_TimeStep > targetUpdateTime && !isOnPause)
 	{
-		lastFrame = time;
+		m_LastFrame = m_Time;
 
 		if (!newPiece)
 		{
@@ -411,6 +514,7 @@ void Game::Draw()
 		{
 			GenerateNewPiece();
 			ClearFilledRows();
+			memset(&m_PreviewedPositions, -1, sizeof(int) * 4);
 		}
 	}
 }

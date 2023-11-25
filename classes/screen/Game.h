@@ -38,9 +38,12 @@ private:
 	Piece* currentPiece;
 
 	// Time management variables
-	float time,
-		lastFrame,
-		timeStep;
+	float m_Time,
+		m_LastFrame,
+		m_TimeStep;
+
+	// Stores the previewed positions where the piece will fall
+	int m_PreviewedPositions[4];
 
 	/// <summary>
 	/// Checks if a row is total filled, if it is then clears it and 
@@ -85,6 +88,16 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	bool CheckIfGameOver();
+
+	/// <summary>
+	/// Check where the piece is going to land
+	/// </summary>
+	void PreviewPiecePosition();
+
+	/// <summary>
+	/// Draws on the screen the piece previewed position
+	/// </summary>
+	void DrawPiecePreviewedPosition();
 
 	/// <summary>
 	/// Draws the game board

@@ -56,7 +56,7 @@ public:
 	/// <param name="posY"></param>
 	/// <param name="width"></param>
 	/// <param name="height"></param>
-	void RenderRect(int posX, int posY, int width, int height);
+	void RenderRect(int posX, int posY, int width, int height, SDL_Color border = { 211, 211, 211, 255 });
 
 	/// <summary>
 	/// Resets the scene with the color black

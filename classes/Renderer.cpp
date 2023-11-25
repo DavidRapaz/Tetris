@@ -92,7 +92,7 @@ void Renderer::RenderTexture(SDL_Texture* texture, int posX, int posY, int width
 /// <param name="posY"></param>
 /// <param name="width"></param>
 /// <param name="height"></param>
-void Renderer::RenderRect(int posX, int posY, int width, int height)
+void Renderer::RenderRect(int posX, int posY, int width, int height, SDL_Color border)
 {
 	SDL_Rect rect;
 
@@ -101,7 +101,7 @@ void Renderer::RenderRect(int posX, int posY, int width, int height)
 	rect.w = width;
 	rect.h = height;
 
-	SDL_SetRenderDrawColor(renderer, 211, 211, 211, 255);
+	SDL_SetRenderDrawColor(renderer, border.r, border.g, border.b, border.a);
 	SDL_RenderDrawRect(renderer, &rect);
 }
 
