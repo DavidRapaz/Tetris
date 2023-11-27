@@ -17,6 +17,8 @@
 
 #include <ctime>
 
+#pragma warning(disable:6385)
+
 // Define sizes and positions
 #define PIECE_SIZE 30
 #define BOARD_TOP_LEFT_X_POS 500
@@ -232,8 +234,9 @@ void Game::HandleEvents(State& gameState)
 /// </summary>
 void Game::PreviewPiecePosition()
 {
-	int highestRow = 19, // Initialize with the last row
-		blockRow   = -1;
+	int highestRow  = 19, // Initialize with the last row
+		blockRow    = -1, // Stores the row of the block that has a collision first
+		lowestBlock = 0;  // Stores the lowest block of the piece
 
 	/*
 	* Go through every block of the piece,
@@ -244,35 +247,41 @@ void Game::PreviewPiecePosition()
 	{
 		int indexBlockRow    = currentPiece->position[index] / 10,
 			indexBlockColumn = currentPiece->position[index] % 10;
+		
+		// Update every time it finds a block where the row is bellow than the current one stored in the lowest block
+		if (indexBlockRow > lowestBlock)
+		{
+			lowestBlock = indexBlockRow;
+		}
 
+		// Start from the block row
 		for (int row = indexBlockRow; row < 20; row++)
 		{
-			int boardPos = row * 10 + indexBlockColumn;
+			int boardPos    = row * 10 + indexBlockColumn,
+				previousRow = row - 1;
 			
 			/*
 			* A collision occurs when the target position
 			* is occupied by a block that does not belong to the current piece
 			*/
 			if (
-				(
-					m_Board[boardPos] != Color::None &&
-					boardPos != currentPiece->position[0] &&
-					boardPos != currentPiece->position[1] &&
-					boardPos != currentPiece->position[2] &&
-					boardPos != currentPiece->position[3]
-				)
+				m_Board[boardPos] != Color::None &&
+				boardPos != currentPiece->position[0] &&
+				boardPos != currentPiece->position[1] &&
+				boardPos != currentPiece->position[2] &&
+				boardPos != currentPiece->position[3] &&
+				previousRow < highestRow
 			)
 			{
-				highestRow = row - 1;
+				highestRow = previousRow;
 				blockRow   = indexBlockRow;
 			}
 		}
 	}
 
+	// If it didn't found any position that is occupied then insert as default the lowest block of the piece
 	if (blockRow == -1)
-	{
-
-	}
+		blockRow = lowestBlock;
 
 	/*
 	* Now for every block of the piece
@@ -491,6 +500,7 @@ void Game::Draw()
 		targetRotation = 0;
 	}
 
+	// Preview and draw where the current piece will fall
 	PreviewPiecePosition();
 	DrawPiecePreviewedPosition();
 
