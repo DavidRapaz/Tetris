@@ -246,7 +246,17 @@ void Game::PreviewPiecePosition()
 	for (int index = 0; index < 4; index++)
 	{
 		int indexBlockRow    = currentPiece->position[index] / 10,
-			indexBlockColumn = currentPiece->position[index] % 10;
+			indexBlockColumn = currentPiece->position[index] % 10,
+			nextRow          = currentPiece->position[index] + 10;
+
+		// If there exists a block that bellongs to the current piece a row bellow then skip this block
+		if (
+			nextRow == currentPiece->position[0] ||
+			nextRow == currentPiece->position[1] ||
+			nextRow == currentPiece->position[2] ||
+			nextRow == currentPiece->position[3]
+		)
+			continue;
 		
 		// Update every time it finds a block where the row is bellow than the current one stored in the lowest block
 		if (indexBlockRow > lowestBlock)
@@ -254,15 +264,20 @@ void Game::PreviewPiecePosition()
 			lowestBlock = indexBlockRow;
 		}
 
-		// Start from the block row
-		for (int row = indexBlockRow; row < 20; row++)
+		/*
+		* First we will find we will find in which column
+		* the first collision occurs
+		*/
+		for (int row = indexBlockRow + 1; row < 20; row++)
 		{
 			int boardPos    = row * 10 + indexBlockColumn,
 				previousRow = row - 1;
 			
 			/*
-			* A collision occurs when the target position
-			* is occupied by a block that does not belong to the current piece
+			* Every time that a position is occupied by another block
+			* that doesn't belong to the current piece
+			* and that the previous row is in a row higher than the highestRow stored
+			* then we update the highestRow and the blockRow
 			*/
 			if (
 				m_Board[boardPos] != Color::None &&
@@ -270,11 +285,18 @@ void Game::PreviewPiecePosition()
 				boardPos != currentPiece->position[1] &&
 				boardPos != currentPiece->position[2] &&
 				boardPos != currentPiece->position[3] &&
-				previousRow < highestRow
+				previousRow <= highestRow
 			)
 			{
-				highestRow = previousRow;
-				blockRow   = indexBlockRow;
+				if (previousRow != highestRow)
+				{
+					highestRow = previousRow;
+					blockRow   = indexBlockRow;
+				}
+				else if (blockRow < indexBlockRow)
+				{
+					blockRow = indexBlockRow;
+				}
 			}
 		}
 	}
@@ -371,6 +393,29 @@ void Game::UpdateBoard(bool clear)
 /// </summary>
 void Game::DrawPiecePreviewedPosition()
 {
+	unsigned char red = 0,
+		green         = 0, 
+		blue          = 0, 
+		alpha         = 255;
+
+	switch (currentPiece->GetPieceColor())
+	{
+	case Color::Red:
+		red = 255;
+		break;
+	case Color::Green:
+		green = 255;
+		break;
+	case Color::Blue:
+		blue = 255;
+		break;
+	case Color::Orange:
+		red   = 255;
+		green = 140;
+		blue  = 0;
+		break;
+	}
+
 	for (int index = 0; index < 4; index++)
 	{
 		int column = m_PreviewedPositions[index] % 10,
@@ -381,7 +426,7 @@ void Game::DrawPiecePreviewedPosition()
 			BOARD_TOP_LEFT_Y_POS + (row * PIECE_SIZE),
 			PIECE_SIZE,
 			PIECE_SIZE,
-			{ 255, 0, 0, 255 }
+			{ red, green, blue, 255 }
 		);
 	}
 }

@@ -262,7 +262,7 @@ void Piece::ZShapeRotate(int& sector)
 	if (
 		(position[2] % 10 >= 9 && sector == 1) ||
 		(position[2] % 10 <= 0 && sector == 3)
-		)
+	)
 	{
 		this->rotation = this->previousRotation;
 		return;
