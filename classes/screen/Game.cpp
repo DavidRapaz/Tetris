@@ -395,8 +395,7 @@ void Game::DrawPiecePreviewedPosition()
 {
 	unsigned char red = 0,
 		green         = 0, 
-		blue          = 0, 
-		alpha         = 255;
+		blue          = 0;
 
 	switch (currentPiece->GetPieceColor())
 	{
