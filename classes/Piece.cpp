@@ -55,10 +55,10 @@ void Piece::TShapeInit()
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
-	position[0] = -10 + column; // This represents the block of the piece most to the left side
-	position[1] = -9 + column;
-	position[2] = -8 + column;
-	position[3] = 1 + column;
+	position[0] = -30 + column; // This represents the block of the piece most to the left side
+	position[1] = -29 + column;
+	position[2] = -28 + column;
+	position[3] = -19 + column;
 }
 
 /// <summary>
@@ -71,10 +71,10 @@ void Piece::ZShapeInit()
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
-	position[0] = -10 + column; // This represents the block of the piece most to the left side
-	position[1] = -9 + column;
-	position[2] = 1 + column;
-	position[3] = 2 + column;
+	position[0] = -30 + column; // This represents the block of the piece most to the left side
+	position[1] = -29 + column;
+	position[2] = -19 + column;
+	position[3] = -18 + column;
 }
 
 /// <summary>
@@ -87,10 +87,10 @@ void Piece::LShapeInit()
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
-	position[0] = -20 + column; // This represents the block of the piece most to the left side
-	position[1] = -10 + column;
-	position[2] = 0 + column;
-	position[3] = 1 + column;
+	position[0] = -40 + column; // This represents the block of the piece most to the left side
+	position[1] = -30 + column;
+	position[2] = -20 + column;
+	position[3] = -19 + column;
 }
 
 /// <summary>
@@ -103,10 +103,10 @@ void Piece::IShapeInit()
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
-	position[0] = -30 + column; // This represents the block of the piece most to the left side
-	position[1] = -20 + column;
-	position[2] = -10 + column;
-	position[3] = 0 + column;
+	position[0] = -50 + column; // This represents the block of the piece most to the left side
+	position[1] = -40 + column;
+	position[2] = -30 + column;
+	position[3] = -20 + column;
 }
 
 /// <summary>
@@ -119,10 +119,10 @@ void Piece::BoxShapeInit()
 
 	// Define piece positions
 	// Minor than 0 means it's not to be showned at
-	position[0] = -10 + column; // This represents the block of the piece most to the left side
-	position[1] = -9 + column;
-	position[2] = 0 + column;
-	position[3] = 1 + column;
+	position[0] = -30 + column; // This represents the block of the piece most to the left side
+	position[1] = -29 + column;
+	position[2] = -20 + column;
+	position[3] = -19 + column;
 }
 
 // ---- INITIALIZATION METHODS

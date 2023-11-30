@@ -21,6 +21,7 @@
 
 // Define sizes and positions
 #define PIECE_SIZE 30
+#define NEXT_PIECE_SIZE 15
 #define BOARD_TOP_LEFT_X_POS 500
 #define BOARD_TOP_LEFT_Y_POS 50
 
@@ -106,7 +107,25 @@ bool Game::CheckIfColumnAvailable()
 
 bool Game::CheckIfGameOver()
 {
-	return false;
+	int lowestBlockPos = 0;
+
+	//Fetch the lowest block position of the piece
+	for (int index = 0; index < 4; index++)
+	{
+		if (lowestBlockPos < currentPiece->position[index])
+			lowestBlockPos = currentPiece->position[index];
+	}
+
+	/*
+	* The game is over when the next position of the lowest block is occupied and 
+	* at least one of the indexes isn't even on the board
+	*/
+	return m_Board[lowestBlockPos + 10] != Color::None && (
+		currentPiece->position[0] < 0 || 
+		currentPiece->position[1] < 0 || 
+		currentPiece->position[2] < 0 || 
+		currentPiece->position[3] < 0
+	);
 }
 
 // ---- VALIDATIONS METHODS
@@ -129,6 +148,9 @@ void Game::CheckForPieceLocked()
 			newPiece = true;
 			return;
 		}
+
+		if (pieceNextPos < 0)
+			return;
 
 		/*
 		 * Validates if the next movement will be on top 
@@ -393,6 +415,9 @@ void Game::UpdateBoard(bool clear)
 /// </summary>
 void Game::DrawPiecePreviewedPosition()
 {
+	if (currentPiece->position[0] < 0 && currentPiece->position[1] < 0 && currentPiece->position[2] < 0 && currentPiece->position[3] < 0)
+		return;
+
 	unsigned char red = 0,
 		green         = 0, 
 		blue          = 0;
@@ -498,6 +523,9 @@ void Game::DrawBoard()
 /// </summary>
 void Game::Draw()
 { 
+	if (CheckIfGameOver())
+		return;
+
 	// Manage time
 	m_Time     = (float)SDL_GetTicks();
 	m_TimeStep = m_Time - m_LastFrame;
