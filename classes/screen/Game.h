@@ -35,7 +35,8 @@ private:
 		* m_Orange;
 
 	// Stores the current playing piece
-	Piece* currentPiece;
+	Piece* currentPiece,
+		* nextPieces[3] = { nullptr };
 
 	// Time management variables
 	float m_Time,
@@ -103,4 +104,9 @@ private:
 	/// Draws the game board
 	/// </summary>
 	void DrawBoard();
+
+	/// <summary>
+	/// Draws the board on the right side that contains the next pieces
+	/// </summary>
+	void DrawNextPiecesBoard();
 };

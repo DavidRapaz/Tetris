@@ -77,8 +77,23 @@ void Game::GenerateNewPiece()
 {
 	newPiece = false;
 
-	// Initialize a random new piece
-	currentPiece = new Piece();
+	// If the next pieces are not init the current piece and the next pieces
+	if (nextPieces[0] == nullptr)
+	{
+		// Initialize a random new piece
+		currentPiece = new Piece();
+	
+		nextPieces[0] = new Piece();
+		nextPieces[1] = new Piece();
+		nextPieces[2] = new Piece();
+	} else
+	{
+		currentPiece = nextPieces[0];
+
+		nextPieces[0] = nextPieces[1];
+		nextPieces[1] = nextPieces[2];
+		nextPieces[2] = new Piece();
+	}
 }
 
 // ---- INITIALIZATION METHODS
@@ -340,6 +355,23 @@ void Game::PreviewPiecePosition()
 
 // ---- EVENTS HANDLING METHODS
 
+// ---- NEXT PIECE METHODS
+
+/// <summary>
+/// Draws the board on the right side that contains the next pieces
+/// </summary>
+void Game::DrawNextPiecesBoard()
+{
+	m_Renderer->RenderRect(
+		BOARD_TOP_LEFT_X_POS + (10 * PIECE_SIZE) + 30,
+		BOARD_TOP_LEFT_Y_POS,
+		NEXT_PIECE_SIZE * 9,
+		NEXT_PIECE_SIZE * 16
+	);
+}
+
+// ---- NEXT PIECE METHODS
+
 // ---- GAME BOARD METHODS
 
 /// <summary>
@@ -533,6 +565,7 @@ void Game::Draw()
 	// Updates the board with the current piece position
 	UpdateBoard();
 	DrawBoard();
+	DrawNextPiecesBoard();
 	CheckForPieceLocked();
 
 	/*
