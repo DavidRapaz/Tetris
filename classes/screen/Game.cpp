@@ -285,15 +285,6 @@ void Game::PreviewPiecePosition()
 		int indexBlockRow    = currentPiece->position[index] / 10,
 			indexBlockColumn = currentPiece->position[index] % 10,
 			nextRow          = currentPiece->position[index] + 10;
-
-		// If there exists a block that bellongs to the current piece a row bellow then skip this block
-		if (
-			nextRow == currentPiece->position[0] ||
-			nextRow == currentPiece->position[1] ||
-			nextRow == currentPiece->position[2] ||
-			nextRow == currentPiece->position[3]
-		)
-			continue;
 		
 		// Update every time it finds a block where the row is bellow than the current one stored in the lowest block
 		if (indexBlockRow > lowestBlock)
@@ -309,31 +300,30 @@ void Game::PreviewPiecePosition()
 		{
 			int boardPos    = row * 10 + indexBlockColumn,
 				previousRow = row - 1;
-			
+
 			/*
-			* Every time that a position is occupied by another block
-			* that doesn't belong to the current piece
-			* and that the previous row is in a row higher than the highestRow stored
-			* then we update the highestRow and the blockRow
+			* Ignore current row if the board pos is empty
+			* or if the current board pos is occupied 
+			* by a block of the current piece
 			*/
 			if (
-				m_Board[boardPos] != Color::None &&
-				boardPos != currentPiece->position[0] &&
-				boardPos != currentPiece->position[1] &&
-				boardPos != currentPiece->position[2] &&
-				boardPos != currentPiece->position[3] &&
-				previousRow <= highestRow
+				m_Board[boardPos] == Color::None ||
+				boardPos == currentPiece->position[0] ||
+				boardPos == currentPiece->position[1] ||
+				boardPos == currentPiece->position[2] ||
+				boardPos == currentPiece->position[3]
 			)
+				continue;
+			
+			/*
+			* Here we compare the difference between the current block row and selected row with the difference
+			* between the highest row stored and the block row stored
+			* with the difference comparison we will know which block first colides with a inserted piece
+			*/
+			if (previousRow - indexBlockRow < highestRow - blockRow)
 			{
-				if (previousRow != highestRow)
-				{
-					highestRow = previousRow;
-					blockRow   = indexBlockRow;
-				}
-				else if (blockRow < indexBlockRow)
-				{
-					blockRow = indexBlockRow;
-				}
+				highestRow = previousRow;
+				blockRow   = indexBlockRow;
 			}
 		}
 	}
