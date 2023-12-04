@@ -348,3 +348,8 @@ Color Piece::GetPieceColor()
 {
 	return pieceColor;
 }
+
+Shape Piece::GetPieceShape()
+{
+	return pieceShape;
+}

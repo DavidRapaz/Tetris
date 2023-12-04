@@ -7,6 +7,7 @@
 #include "../Renderer.h"
 #include "../../State.h"
 #include "../../Color.h"
+#include "../../Shape.h"
 
 // Piece Includes
 #include "../Piece.h"
@@ -352,12 +353,129 @@ void Game::PreviewPiecePosition()
 /// </summary>
 void Game::DrawNextPiecesBoard()
 {
+	int topLeftXPos = BOARD_TOP_LEFT_X_POS + (10 * PIECE_SIZE) + 30;
+
+	// Render the boarders of the preview next pieces board
 	m_Renderer->RenderRect(
-		BOARD_TOP_LEFT_X_POS + (10 * PIECE_SIZE) + 30,
+		topLeftXPos,
 		BOARD_TOP_LEFT_Y_POS,
 		NEXT_PIECE_SIZE * 9,
-		NEXT_PIECE_SIZE * 16
+		NEXT_PIECE_SIZE * 18
 	);
+
+	/*
+	* Draw the pieces previews
+	*/
+	SDL_Texture* pieceColor;
+	for (int index = 0; index < 3; index++)
+	{
+		int start = (index * 6 + 1) * NEXT_PIECE_SIZE;
+
+		switch (nextPieces[index]->GetPieceColor())
+		{
+		case Color::Red:
+			pieceColor = m_Red;
+			break;
+		case Color::Green:
+			pieceColor = m_Green;
+			break;
+		case Color::Blue:
+			pieceColor = m_Blue;
+			break;
+		default:
+			pieceColor = m_Orange;
+			break;
+		}
+
+		/*
+		* Define the positions for each block
+		*/
+		int block01XPos = 0, 
+			block01YPos = 0, 
+			block02XPos = 0, 
+			block02YPos = 0, 
+			block03XPos = 0, 
+			block03YPos = 0, 
+			block04XPos = 0,
+			block04YPos = 0;
+
+		switch (nextPieces[index]->GetPieceShape())
+		{
+		case Shape::TShape:
+			// Define the positions in the x axis
+			block01XPos = NEXT_PIECE_SIZE * 3;
+			block02XPos = NEXT_PIECE_SIZE * 4;
+			block03XPos = NEXT_PIECE_SIZE * 5;
+			block04XPos = block02XPos;
+
+			// Define the positions in the y axis
+			block01YPos = start;
+			block02YPos = start;
+			block03YPos = start;
+			block04YPos = start + NEXT_PIECE_SIZE;
+			break;
+		case Shape::ZShape:
+			// Define the positions in the x axis
+			block01XPos = NEXT_PIECE_SIZE * 3;
+			block02XPos = NEXT_PIECE_SIZE * 4;
+			block03XPos = block02XPos;
+			block04XPos = NEXT_PIECE_SIZE * 5;
+
+			// Define the positions in the y axis
+			block01YPos = start;
+			block02YPos = start;
+			block03YPos = start + NEXT_PIECE_SIZE;
+			block04YPos = start + NEXT_PIECE_SIZE;
+			break;
+		case Shape::LShape:
+			// Define the positions in the x axis
+    		block01XPos = NEXT_PIECE_SIZE * 4;
+			block02XPos = block01XPos;
+			block03XPos = block01XPos;
+			block04XPos = NEXT_PIECE_SIZE * 5;
+
+			// Define the positions in the y axis
+			block01YPos = start;
+			block02YPos = start + NEXT_PIECE_SIZE;
+			block03YPos = start + NEXT_PIECE_SIZE * 2;
+			block04YPos = block03YPos;
+			break;
+		case Shape::IShape:
+			// Define the positions in the x axis
+			block01XPos = NEXT_PIECE_SIZE * 4;
+			block02XPos = block01XPos;
+			block03XPos = block01XPos;
+			block04XPos = block01XPos;
+
+			// Define the positions in the y axis
+			block01YPos = start;
+			block02YPos = start + NEXT_PIECE_SIZE;
+			block03YPos = start + NEXT_PIECE_SIZE * 2;
+			block04YPos = start + NEXT_PIECE_SIZE * 3;
+			break;
+		case Shape::BoxShape:
+			// Define the positions in the x axis
+			block01XPos = NEXT_PIECE_SIZE * 4;
+			block02XPos = NEXT_PIECE_SIZE * 5;
+			block03XPos = block01XPos;
+			block04XPos = block02XPos;
+
+			// Define the positions in the y axis
+			block01YPos = start;
+			block02YPos = start;
+			block03YPos = start + NEXT_PIECE_SIZE;
+			block04YPos = block03YPos;
+			break;
+		default:
+			break;
+		}
+
+		// Render the textures
+		m_Renderer->RenderTexture(pieceColor, topLeftXPos + block01XPos, BOARD_TOP_LEFT_Y_POS + block01YPos, NEXT_PIECE_SIZE, NEXT_PIECE_SIZE);
+		m_Renderer->RenderTexture(pieceColor, topLeftXPos + block02XPos, BOARD_TOP_LEFT_Y_POS + block02YPos, NEXT_PIECE_SIZE, NEXT_PIECE_SIZE);
+		m_Renderer->RenderTexture(pieceColor, topLeftXPos + block03XPos, BOARD_TOP_LEFT_Y_POS + block03YPos, NEXT_PIECE_SIZE, NEXT_PIECE_SIZE);
+		m_Renderer->RenderTexture(pieceColor, topLeftXPos + block04XPos, BOARD_TOP_LEFT_Y_POS + block04YPos, NEXT_PIECE_SIZE, NEXT_PIECE_SIZE);
+	}
 }
 
 // ---- NEXT PIECE METHODS

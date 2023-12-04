@@ -34,6 +34,12 @@ public:
 	/// <returns>Color</returns>
 	Color GetPieceColor();
 
+	/// <summary>
+	/// Get the shape of the piece
+	/// </summary>
+	/// <returns></returns>
+	Shape GetPieceShape();
+
 	// Stores the coordinates for each block of the piece
 	int position[4];
 private:
