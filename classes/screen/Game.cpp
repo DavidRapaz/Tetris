@@ -34,7 +34,8 @@
 bool newPiece    = false,
 	updateColumn = false,
 	rotatePiece  = false,
-	isOnPause    = false;
+	isOnPause    = false,
+	gameOver     = false;
 
 // NEW VALUES TARGET VARS
 int targetDirection = 0, 
@@ -67,7 +68,10 @@ Game::Game(Renderer* gameRenderer)
 }
 
 Game::~Game()
-{}
+{
+	// Free up the memory occupied
+	delete m_Red, m_Green, m_Blue, m_Orange;
+}
 
 // ---- INITIALIZATION METHODS
 
@@ -79,21 +83,21 @@ void Game::GenerateNewPiece()
 	newPiece = false;
 
 	// If the next pieces are not init the current piece and the next pieces
-	if (nextPieces[0] == nullptr)
+	if (m_NextPieces[0] == nullptr)
 	{
 		// Initialize a random new piece
-		currentPiece = new Piece();
+		m_CurrentPiece = new Piece();
 	
-		nextPieces[0] = new Piece();
-		nextPieces[1] = new Piece();
-		nextPieces[2] = new Piece();
+		m_NextPieces[0] = new Piece();
+		m_NextPieces[1] = new Piece();
+		m_NextPieces[2] = new Piece();
 	} else
 	{
-		currentPiece = nextPieces[0];
+		m_CurrentPiece = m_NextPieces[0];
 
-		nextPieces[0] = nextPieces[1];
-		nextPieces[1] = nextPieces[2];
-		nextPieces[2] = new Piece();
+		m_NextPieces[0] = m_NextPieces[1];
+		m_NextPieces[1] = m_NextPieces[2];
+		m_NextPieces[2] = new Piece();
 	}
 }
 
@@ -105,15 +109,15 @@ bool Game::CheckIfColumnAvailable()
 {
 	for (int index = 0; index < 4; index++)
 	{
-		int pieceNextColumn = currentPiece->position[index] + targetDirection;
+		int pieceNextColumn = m_CurrentPiece->position[index] + targetDirection;
 
 		// Validates if there exists a block on the target column and if that block doesn't belong to the current piece
 		if (
 			m_Board[pieceNextColumn] != Color::None &&
-			currentPiece->position[0] != pieceNextColumn &&
-			currentPiece->position[1] != pieceNextColumn &&
-			currentPiece->position[2] != pieceNextColumn &&
-			currentPiece->position[3] != pieceNextColumn
+			m_CurrentPiece->position[0] != pieceNextColumn &&
+			m_CurrentPiece->position[1] != pieceNextColumn &&
+			m_CurrentPiece->position[2] != pieceNextColumn &&
+			m_CurrentPiece->position[3] != pieceNextColumn
 		)
 			return false;
 	}
@@ -128,8 +132,8 @@ bool Game::CheckIfGameOver()
 	//Fetch the lowest block position of the piece
 	for (int index = 0; index < 4; index++)
 	{
-		if (lowestBlockPos < currentPiece->position[index])
-			lowestBlockPos = currentPiece->position[index];
+		if (lowestBlockPos < m_CurrentPiece->position[index])
+			lowestBlockPos = m_CurrentPiece->position[index];
 	}
 
 	/*
@@ -137,10 +141,10 @@ bool Game::CheckIfGameOver()
 	* at least one of the indexes isn't even on the board
 	*/
 	return m_Board[lowestBlockPos + 10] != Color::None && (
-		currentPiece->position[0] < 0 || 
-		currentPiece->position[1] < 0 || 
-		currentPiece->position[2] < 0 || 
-		currentPiece->position[3] < 0
+		m_CurrentPiece->position[0] < 0 || 
+		m_CurrentPiece->position[1] < 0 || 
+		m_CurrentPiece->position[2] < 0 || 
+		m_CurrentPiece->position[3] < 0
 	);
 }
 
@@ -156,7 +160,7 @@ void Game::CheckForPieceLocked()
 {
 	for (int index = 0; index < 4; index++)
 	{
-		int pieceNextPos = currentPiece->position[index] + 10;
+		int pieceNextPos = m_CurrentPiece->position[index] + 10;
 
 		// Validate if the next movement is going to be outside of the board
 		if (pieceNextPos > 199)
@@ -175,10 +179,10 @@ void Game::CheckForPieceLocked()
 		 */
 		if (
 			m_Board[pieceNextPos] != Color::None &&
-			currentPiece->position[0] != pieceNextPos &&
-			currentPiece->position[1] != pieceNextPos &&
-			currentPiece->position[2] != pieceNextPos &&
-			currentPiece->position[3] != pieceNextPos
+			m_CurrentPiece->position[0] != pieceNextPos &&
+			m_CurrentPiece->position[1] != pieceNextPos &&
+			m_CurrentPiece->position[2] != pieceNextPos &&
+			m_CurrentPiece->position[3] != pieceNextPos
 		)
 		{
 			newPiece = true;
@@ -283,9 +287,9 @@ void Game::PreviewPiecePosition()
 	*/
 	for (int index = 0; index < 4; index++)
 	{
-		int indexBlockRow    = currentPiece->position[index] / 10,
-			indexBlockColumn = currentPiece->position[index] % 10,
-			nextRow          = currentPiece->position[index] + 10;
+		int indexBlockRow    = m_CurrentPiece->position[index] / 10,
+			indexBlockColumn = m_CurrentPiece->position[index] % 10,
+			nextRow          = m_CurrentPiece->position[index] + 10;
 		
 		// Update every time it finds a block where the row is bellow than the current one stored in the lowest block
 		if (indexBlockRow > lowestBlock)
@@ -303,16 +307,30 @@ void Game::PreviewPiecePosition()
 				previousRow = row - 1;
 
 			/*
-			* Ignore current row if the board pos is empty
+			* The quickest way found to prevent not counting the last row as a "limit"
+			* the L Shape piece preview was being drawned outside of the board when rotated
+			*/
+			if (
+				row == 19 && 
+				m_Board[boardPos] == Color::None &&
+				row - indexBlockRow < highestRow + 1 - blockRow
+			)
+			{
+				highestRow = row;
+				blockRow   = indexBlockRow;
+			}
+
+			/*
+			* Ignore current row if the board pos is empty and it's not the last row
 			* or if the current board pos is occupied 
 			* by a block of the current piece
 			*/
 			if (
 				m_Board[boardPos] == Color::None ||
-				boardPos == currentPiece->position[0] ||
-				boardPos == currentPiece->position[1] ||
-				boardPos == currentPiece->position[2] ||
-				boardPos == currentPiece->position[3]
+				boardPos == m_CurrentPiece->position[0] ||
+				boardPos == m_CurrentPiece->position[1] ||
+				boardPos == m_CurrentPiece->position[2] ||
+				boardPos == m_CurrentPiece->position[3]
 			)
 				continue;
 			
@@ -338,10 +356,10 @@ void Game::PreviewPiecePosition()
 	* we add the difference between the first block to collide row
 	* and the row previous to where there will be a collision
 	*/
-	m_PreviewedPositions[0] = currentPiece->position[0] + (highestRow - blockRow) * 10;
-	m_PreviewedPositions[1] = currentPiece->position[1] + (highestRow - blockRow) * 10;
-	m_PreviewedPositions[2] = currentPiece->position[2] + (highestRow - blockRow) * 10;
-	m_PreviewedPositions[3] = currentPiece->position[3] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[0] = m_CurrentPiece->position[0] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[1] = m_CurrentPiece->position[1] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[2] = m_CurrentPiece->position[2] + (highestRow - blockRow) * 10;
+	m_PreviewedPositions[3] = m_CurrentPiece->position[3] + (highestRow - blockRow) * 10;
 }
 
 // ---- EVENTS HANDLING METHODS
@@ -371,7 +389,7 @@ void Game::DrawNextPiecesBoard()
 	{
 		int start = (index * 6 + 1) * NEXT_PIECE_SIZE;
 
-		switch (nextPieces[index]->GetPieceColor())
+		switch (m_NextPieces[index]->GetPieceColor())
 		{
 		case Color::Red:
 			pieceColor = m_Red;
@@ -399,7 +417,7 @@ void Game::DrawNextPiecesBoard()
 			block04XPos = 0,
 			block04YPos = 0;
 
-		switch (nextPieces[index]->GetPieceShape())
+		switch (m_NextPieces[index]->GetPieceShape())
 		{
 		case Shape::TShape:
 			// Define the positions in the x axis
@@ -537,11 +555,11 @@ void Game::ClearFilledRows()
 void Game::UpdateBoard(bool clear)
 {
 	int pieceIndex    = 0;
-	Color updateColor = clear ? Color::None : currentPiece->GetPieceColor();
+	Color updateColor = clear ? Color::None : m_CurrentPiece->GetPieceColor();
 
 	for (int index = 0; index < 4; index++)
 	{
-		pieceIndex = currentPiece->position[index];
+		pieceIndex = m_CurrentPiece->position[index];
 		
 		if (pieceIndex > -1)
 		{
@@ -555,14 +573,14 @@ void Game::UpdateBoard(bool clear)
 /// </summary>
 void Game::DrawPiecePreviewedPosition()
 {
-	if (currentPiece->position[0] < 0 && currentPiece->position[1] < 0 && currentPiece->position[2] < 0 && currentPiece->position[3] < 0)
+	if (m_CurrentPiece->position[0] < 0 && m_CurrentPiece->position[1] < 0 && m_CurrentPiece->position[2] < 0 && m_CurrentPiece->position[3] < 0)
 		return;
 
 	unsigned char red = 0,
 		green         = 0, 
 		blue          = 0;
 
-	switch (currentPiece->GetPieceColor())
+	switch (m_CurrentPiece->GetPieceColor())
 	{
 	case Color::Red:
 		red = 255;
@@ -593,6 +611,39 @@ void Game::DrawPiecePreviewedPosition()
 			{ red, green, blue, 255 }
 		);
 	}
+}
+
+/// <summary>
+/// Draws in the screen the info 
+/// that informs the user the game is on pause
+/// </summary>
+void Game::DrawOnPause()
+{
+	if (m_OnPauseText == nullptr)
+	{
+		m_OnPauseText = m_Renderer->LoadText("Paused");
+	}
+
+	m_Renderer->RenderRect(BOARD_TOP_LEFT_X_POS - 100, BOARD_TOP_LEFT_Y_POS + 200, 500, 200, { 200, 200, 200, 200 }, true);
+	m_Renderer->RenderTexture(m_OnPauseText, BOARD_TOP_LEFT_X_POS + 120, BOARD_TOP_LEFT_Y_POS + 290);
+}
+
+/// <summary>
+/// Draws in the screen the info
+/// that informs the user the game is over and 
+/// what to do to restart or exit to menu
+/// </summary>
+void Game::DrawGameOver()
+{
+	if (m_GameOverText == nullptr)
+	{
+		m_GameOverText     = m_Renderer->LoadText("Game Over!");
+		m_GameOverInfoText = m_Renderer->LoadText("Press esc to quit or arrow down to restart");
+	}
+
+	m_Renderer->RenderRect(BOARD_TOP_LEFT_X_POS - 100, BOARD_TOP_LEFT_Y_POS + 200, 500, 200, { 200, 200, 200, 200 }, true);
+	m_Renderer->RenderTexture(m_GameOverText, BOARD_TOP_LEFT_X_POS + 100, BOARD_TOP_LEFT_Y_POS + 290);
+	m_Renderer->RenderTexture(m_GameOverInfoText, BOARD_TOP_LEFT_X_POS + 140, BOARD_TOP_LEFT_Y_POS + 290);
 }
 
 /// <summary>
@@ -663,29 +714,38 @@ void Game::DrawBoard()
 /// </summary>
 void Game::Draw()
 { 
-	if (CheckIfGameOver())
-		return;
-
 	// Manage time
 	m_Time     = (float)SDL_GetTicks();
 	m_TimeStep = m_Time - m_LastFrame;
 
 	// Updates the board with the current piece position
-	UpdateBoard();
 	DrawBoard();
 	DrawNextPiecesBoard();
-	CheckForPieceLocked();
+
+	// Check if the game is over
+	if (gameOver)
+	{
+		DrawGameOver();
+		return;
+	}
+
+	// Check if the game is on pause
+	if (isOnPause)
+	{
+		DrawOnPause();
+		return;
+	}
 
 	/*
 	* Update the column if the current 
 	* piece is not already locked
 	*/
-	if (!newPiece && updateColumn && !isOnPause)
+	if (!newPiece && updateColumn)
 	{
 		if (CheckIfColumnAvailable())
 		{
 			UpdateBoard(true);
-			currentPiece->UpdateColumn(targetDirection);
+			m_CurrentPiece->UpdateColumn(targetDirection);
 		}
 
 		// Reset control variables
@@ -693,19 +753,19 @@ void Game::Draw()
 		targetDirection = 0;
 	}
 
-	if (!newPiece && rotatePiece && !isOnPause)
+	if (!newPiece && rotatePiece)
 	{
 		UpdateBoard(true);
-		currentPiece->Rotate(targetRotation);
+		m_CurrentPiece->Rotate(targetRotation);
 
-		// Validate if with the new rotation the target if over an already inserted piece
+		// Validate if with the new rotation the target is over an already inserted piece
 		// If it exists then rotate back
 		for (int index = 0; index < 4; index++)
 		{
-			int pieceIndex = currentPiece->position[index];
+			int pieceIndex = m_CurrentPiece->position[index];
 			if (m_Board[pieceIndex] != Color::None)
 			{
-				currentPiece->Rotate(-(targetRotation));
+				m_CurrentPiece->Rotate(-(targetRotation));
 			}
 		}
 
@@ -732,14 +792,19 @@ void Game::Draw()
 			UpdateBoard(true);
 
 			// After draw update the current piece position
-			currentPiece->UpdatePosition();
+			m_CurrentPiece->UpdatePosition();
 		} else
 		{
 			GenerateNewPiece();
 			ClearFilledRows();
 			memset(&m_PreviewedPositions, -1, sizeof(int) * 4);
 		}
+
+		CheckForPieceLocked();
+		CheckIfGameOver();
 	}
+
+	UpdateBoard();
 }
 
 // ---- GAME BOARD METHODS

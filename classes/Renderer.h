@@ -28,8 +28,7 @@ public:
 	SDL_Texture* LoadText(const char* text, SDL_Color textColor = { 255, 255, 255, 0 });
 
 	/// <summary>
-	/// Renders a given texture in the specified position, 
-	/// can also define the texture width and height
+	/// Renders a given texture in the specified position
 	/// </summary>
 	/// <param name="texture"></param>
 	/// <param name="posX"></param>
@@ -56,7 +55,7 @@ public:
 	/// <param name="posY"></param>
 	/// <param name="width"></param>
 	/// <param name="height"></param>
-	void RenderRect(int posX, int posY, int width, int height, SDL_Color border = { 211, 211, 211, 255 });
+	void RenderRect(int posX, int posY, int width, int height, SDL_Color border = { 211, 211, 211, 255 }, bool fill = false);
 
 	/// <summary>
 	/// Resets the scene with the color black

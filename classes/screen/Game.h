@@ -34,9 +34,14 @@ private:
 		* m_Green, 
 		* m_Orange;
 
+	// Store the textures of each screen text
+	SDL_Texture* m_OnPauseText = nullptr, 
+		* m_GameOverText       = nullptr,
+		* m_GameOverInfoText   = nullptr;
+
 	// Stores the current playing piece
-	Piece* currentPiece,
-		* nextPieces[3] = { nullptr };
+	Piece* m_CurrentPiece,
+		* m_NextPieces[3] = { nullptr };
 
 	// Time management variables
 	float m_Time,
@@ -109,4 +114,17 @@ private:
 	/// Draws the board on the right side that contains the next pieces
 	/// </summary>
 	void DrawNextPiecesBoard();
+
+	/// <summary>
+	/// Draws in the screen the info 
+	/// that informs the user the game is on pause
+	/// </summary>
+	void DrawOnPause();
+
+	/// <summary>
+	/// Draws in the screen the info
+	/// that informs the user the game is over and 
+	/// what to do to restart or exit to menu
+	/// </summary>
+	void DrawGameOver();
 };
