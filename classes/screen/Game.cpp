@@ -276,9 +276,21 @@ void Game::HandleEvents(State& gameState)
 /// </summary>
 void Game::PreviewPiecePosition()
 {
-	int highestRow  = 19, // Initialize with the last row
-		blockRow    = -1, // Stores the row of the block that has a collision first
-		lowestBlock = 0;  // Stores the lowest block of the piece
+	int highestRow = 19, // Initialize with the last row
+		blockRow   = -1; // Stores the row of the block that has a collision first
+
+	/*
+	* Add the lowest row to block row by default
+	*/
+	for (int index = 0; index < 4; index++)
+	{
+		int indexBlockRow = m_CurrentPiece->position[index] / 10;
+
+		if (indexBlockRow > blockRow)
+		{
+			blockRow = indexBlockRow;
+		}
+	}
 
 	/*
 	* Go through every block of the piece,
@@ -290,12 +302,6 @@ void Game::PreviewPiecePosition()
 		int indexBlockRow    = m_CurrentPiece->position[index] / 10,
 			indexBlockColumn = m_CurrentPiece->position[index] % 10,
 			nextRow          = m_CurrentPiece->position[index] + 10;
-		
-		// Update every time it finds a block where the row is bellow than the current one stored in the lowest block
-		if (indexBlockRow > lowestBlock)
-		{
-			lowestBlock = indexBlockRow;
-		}
 
 		/*
 		* First we will find we will find in which column
@@ -303,22 +309,8 @@ void Game::PreviewPiecePosition()
 		*/
 		for (int row = indexBlockRow + 1; row < 20; row++)
 		{
-			int boardPos    = row * 10 + indexBlockColumn,
-				previousRow = row - 1;
-
-			/*
-			* The quickest way found to prevent not counting the last row as a "limit"
-			* the L Shape piece preview was being drawned outside of the board when rotated
-			*/
-			if (
-				row == 19 && 
-				m_Board[boardPos] == Color::None &&
-				row - indexBlockRow < highestRow + 1 - blockRow
-			)
-			{
-				highestRow = row;
-				blockRow   = indexBlockRow;
-			}
+			int boardPos       = row * 10 + indexBlockColumn,
+				comparissonRow = row - 1;
 
 			/*
 			* Ignore current row if the board pos is empty and it's not the last row
@@ -333,23 +325,19 @@ void Game::PreviewPiecePosition()
 				boardPos == m_CurrentPiece->position[3]
 			)
 				continue;
-			
+
 			/*
 			* Here we compare the difference between the current block row and selected row with the difference
 			* between the highest row stored and the block row stored
 			* with the difference comparison we will know which block first colides with a inserted piece
 			*/
-			if (previousRow - indexBlockRow < highestRow - blockRow)
+			if (comparissonRow - indexBlockRow < highestRow - blockRow)
 			{
-				highestRow = previousRow;
+				highestRow = comparissonRow;
 				blockRow   = indexBlockRow;
 			}
 		}
 	}
-
-	// If it didn't found any position that is occupied then insert as default the lowest block of the piece
-	if (blockRow == -1)
-		blockRow = lowestBlock;
 
 	/*
 	* Now for every block of the piece
@@ -722,6 +710,16 @@ void Game::Draw()
 	DrawBoard();
 	DrawNextPiecesBoard();
 
+	// After each position update check if the piece is locked and the game is over
+	CheckForPieceLocked();
+	CheckIfGameOver();
+
+	// Preview and draw where the current piece will fall
+	PreviewPiecePosition();
+	DrawPiecePreviewedPosition();
+
+	UpdateBoard();
+
 	// Check if the game is over
 	if (gameOver)
 	{
@@ -773,10 +771,6 @@ void Game::Draw()
 		targetRotation = 0;
 	}
 
-	// Preview and draw where the current piece will fall
-	PreviewPiecePosition();
-	DrawPiecePreviewedPosition();
-
 	/*
 	* Check if the time between the current time and the last frame
 	* is greater than the max period given for a frame
@@ -799,12 +793,7 @@ void Game::Draw()
 			ClearFilledRows();
 			memset(&m_PreviewedPositions, -1, sizeof(int) * 4);
 		}
-
-		CheckForPieceLocked();
-		CheckIfGameOver();
 	}
-
-	UpdateBoard();
 }
 
 // ---- GAME BOARD METHODS
