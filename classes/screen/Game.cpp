@@ -70,7 +70,7 @@ Game::Game(Renderer* gameRenderer)
 Game::~Game()
 {
 	// Free up the memory occupied
-	delete m_Red, m_Green, m_Blue, m_Orange;
+	delete m_Red, m_Green, m_Blue, m_Orange, m_OnPauseText, m_GameOverText, m_GameOverInfoText;
 }
 
 // ---- INITIALIZATION METHODS
@@ -125,11 +125,11 @@ bool Game::CheckIfColumnAvailable()
 	return true;
 }
 
-bool Game::CheckIfGameOver()
+void Game::CheckIfGameOver()
 {
 	int lowestBlockPos = 0;
 
-	//Fetch the lowest block position of the piece
+	// Fetch the lowest block position of the piece
 	for (int index = 0; index < 4; index++)
 	{
 		if (lowestBlockPos < m_CurrentPiece->position[index])
@@ -140,10 +140,10 @@ bool Game::CheckIfGameOver()
 	* The game is over when the next position of the lowest block is occupied and 
 	* at least one of the indexes isn't even on the board
 	*/
-	return m_Board[lowestBlockPos + 10] != Color::None && (
-		m_CurrentPiece->position[0] < 0 || 
-		m_CurrentPiece->position[1] < 0 || 
-		m_CurrentPiece->position[2] < 0 || 
+	gameOver = m_Board[lowestBlockPos + 10] != Color::None && (
+		m_CurrentPiece->position[0] < 0 ||
+		m_CurrentPiece->position[1] < 0 ||
+		m_CurrentPiece->position[2] < 0 ||
 		m_CurrentPiece->position[3] < 0
 	);
 }

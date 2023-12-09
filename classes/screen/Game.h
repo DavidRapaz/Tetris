@@ -92,8 +92,7 @@ private:
 	/// <summary>
 	/// Validades if the user cannot make any more moves
 	/// </summary>
-	/// <returns></returns>
-	bool CheckIfGameOver();
+	void CheckIfGameOver();
 
 	/// <summary>
 	/// Check where the piece is going to land
