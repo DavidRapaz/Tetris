@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+# CMake
+/build/
+/out/
+CMakeUserPresets.json
+
+# Visual Studio
+/.vs/
+/x64/
+/Debug/
+/Release/

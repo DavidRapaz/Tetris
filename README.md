@@ -4,6 +4,33 @@
 
 <p>A raw version of the tetris video game.</p>
 
+## Building
+
+<p>
+    The project is built with CMake (3.21 or newer). On Windows/MSVC, CMake
+    downloads SDL2, SDL2_image and SDL2_ttf into the build folder by itself, so
+    there is nothing to install or copy by hand.
+</p>
+
+```bash
+cmake --preset default
+cmake --build --preset default-release
+```
+
+<p>
+    The game ends up in <code>build/default/Release</code>, together with the SDL
+    DLLs and the <code>assets</code> folder. Visual Studio can also just open the
+    repository folder (File &gt; Open &gt; Folder), it picks up
+    <code>CMakePresets.json</code> on its own.
+</p>
+
+<p>
+    To use an SDL that is already installed on the system (vcpkg, apt, brew, ...)
+    instead of the downloaded one, configure with
+    <code>-DTETRIS_FETCH_SDL=OFF</code>, or use the <code>system-sdl</code>
+    preset.
+</p>
+
 ## Features
 
 <ul>

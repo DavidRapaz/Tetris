@@ -1,0 +1,70 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default generator",
+      "description": "Uses the newest Visual Studio installed (multi-config: Debug/Release)",
+      "binaryDir": "${sourceDir}/build/default"
+    },
+    {
+      "name": "ninja-debug",
+      "displayName": "Ninja Debug",
+      "description": "On Windows this needs a Developer Command Prompt so that cl.exe is on PATH",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ninja-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ninja-release",
+      "displayName": "Ninja Release",
+      "description": "On Windows this needs a Developer Command Prompt so that cl.exe is on PATH",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ninja-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "system-sdl",
+      "displayName": "Ninja Release, SDL provided by the system",
+      "description": "Uses find_package instead of downloading SDL (vcpkg, apt, brew, ...)",
+      "inherits": "ninja-release",
+      "binaryDir": "${sourceDir}/build/system-sdl",
+      "cacheVariables": {
+        "TETRIS_FETCH_SDL": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default-debug",
+      "configurePreset": "default",
+      "configuration": "Debug"
+    },
+    {
+      "name": "default-release",
+      "configurePreset": "default",
+      "configuration": "Release"
+    },
+    {
+      "name": "ninja-debug",
+      "configurePreset": "ninja-debug"
+    },
+    {
+      "name": "ninja-release",
+      "configurePreset": "ninja-release"
+    },
+    {
+      "name": "system-sdl",
+      "configurePreset": "system-sdl"
+    }
+  ]
+}
