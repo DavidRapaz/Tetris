@@ -35,9 +35,26 @@
 /build/
 /out/
 CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
 
-# Visual Studio
+# Visual Studio / MSBuild
 /.vs/
 /x64/
+/Win32/
 /Debug/
 /Release/
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.ipch
+*.idb
+*.ilk
+*.pdb
+*.tlog
+*.log
+*.vcxproj.user
