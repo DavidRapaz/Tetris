@@ -1,39 +1,44 @@
+#include "core/Game.h"
+
 // SDL
-#include <SDL_video.h>
+// #include <SDL_video.h>
 
 // Input/Output
-#include <stdio.h>
-#include <iostream>
+// #include <stdio.h>
+// #include <iostream>
 
 // General classes 
-#include "classes/Renderer.h"
+// #include "classes/Renderer.h"
 
 // Screen Classes
-#include "classes/screen/Screen.h"
-#include "classes/screen/Game.h"
-#include "classes/screen/Menu.h"
+// #include "classes/screen/Screen.h"
+// #include "classes/screen/Game.h"
+// #include "classes/screen/Menu.h"
 
 // Enums
-#include "State.h"
+// #include "enums/State.h"
 
 #undef main // Happens because SDL has a main definition
 
 // CONSTANTS
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 760
+// #define SCREEN_WIDTH 1280
+// #define SCREEN_HEIGHT 760
 
 // GLOBAL VARS
 
-SDL_Window* window;
+// SDL_Window* window;
 
-State currentState  = State::InMenu;
-State previousState = State::InMenu;
+// State currentState  = State::InMenu;
+// State previousState = State::InMenu;
 
 int main()
 {
-	int windowFlags;
-	windowFlags = 0;
+	const auto game = new Game();
+
+	game->init();
+
+	/* int windowFlags = 0;
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER) < 0)
@@ -79,7 +84,7 @@ int main()
 
 		renderer.PresentScene();
 		SDL_Delay(16);
-	}
+	} */
 
 	return 0;
 }

@@ -8,15 +8,24 @@
   "configurePresets": [
     {
       "name": "default",
-      "displayName": "Default generator",
-      "description": "Uses the newest Visual Studio installed (multi-config: Debug/Release)",
+      "displayName": "Visual Studio 2026 (x64)",
+      "description": "Multi-config: Debug and Release live side by side in the same build folder",
+      "generator": "Visual Studio 18 2026",
+      "architecture": {
+        "value": "x64",
+        "strategy": "set"
+      },
       "binaryDir": "${sourceDir}/build/default"
     },
     {
       "name": "ninja-debug",
       "displayName": "Ninja Debug",
-      "description": "On Windows this needs a Developer Command Prompt so that cl.exe is on PATH",
+      "description": "Outside Visual Studio this needs a Developer Command Prompt so that cl.exe is on PATH",
       "generator": "Ninja",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
       "binaryDir": "${sourceDir}/build/ninja-debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
@@ -25,8 +34,12 @@
     {
       "name": "ninja-release",
       "displayName": "Ninja Release",
-      "description": "On Windows this needs a Developer Command Prompt so that cl.exe is on PATH",
+      "description": "Outside Visual Studio this needs a Developer Command Prompt so that cl.exe is on PATH",
       "generator": "Ninja",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
       "binaryDir": "${sourceDir}/build/ninja-release",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"

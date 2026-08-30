@@ -1,7 +1,7 @@
 #include "Menu.h"
 #include "SDL_keycode.h"
 #include "../Renderer.h"
-#include "../../State.h"
+#include "../../enums/State.h"
 
 Menu::Menu(Renderer* gameRenderer)
 {

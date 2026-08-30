@@ -5,8 +5,8 @@
 #include "SDL_timer.h"
 
 #include "../Renderer.h"
-#include "../../State.h"
-#include "../../Color.h"
+#include "../../enums/State.h"
+#include "../../enums/Color.h"
 #include "../../Shape.h"
 
 // Piece Includes
@@ -70,7 +70,14 @@ Game::Game(Renderer* gameRenderer)
 Game::~Game()
 {
 	// Free up the memory occupied
-	delete m_Red, m_Green, m_Blue, m_Orange, m_OnPauseText, m_GameOverText, m_GameOverInfoText;
+	SDL_DestroyTexture(m_Red);
+	SDL_DestroyTexture(m_Blue);
+	SDL_DestroyTexture(m_Green);
+	SDL_DestroyTexture(m_Orange);
+	SDL_DestroyTexture(m_OnPauseText);
+	SDL_DestroyTexture(m_GameOverInfoText);
+	SDL_DestroyTexture(m_GameOverText);
+	// delete m_Red, m_Green, m_Blue, m_Orange, m_OnPauseText, m_GameOverText, m_GameOverInfoText;
 }
 
 // ---- INITIALIZATION METHODS

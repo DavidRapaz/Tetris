@@ -25,6 +25,13 @@ cmake --build --preset default-release
 </p>
 
 <p>
+    The <code>default</code> preset pins the <em>Visual Studio 18 2026</em>
+    generator. With another Visual Studio installed, change the
+    <code>generator</code> field in <code>CMakePresets.json</code>, or use one of
+    the <code>ninja-*</code> presets.
+</p>
+
+<p>
     To use an SDL that is already installed on the system (vcpkg, apt, brew, ...)
     instead of the downloaded one, configure with
     <code>-DTETRIS_FETCH_SDL=OFF</code>, or use the <code>system-sdl</code>

@@ -15,19 +15,28 @@ include(AddSDL2)
 tetris_provide_sdl()
 
 add_executable(Tetris
-    Tetris.cpp
-    Color.h
-    Shape.h
-    State.h
-    classes/Piece.cpp
-    classes/Piece.h
-    classes/Renderer.cpp
-    classes/Renderer.h
-    classes/screen/Game.cpp
-    classes/screen/Game.h
-    classes/screen/Menu.cpp
-    classes/screen/Menu.h
-    classes/screen/Screen.h
+        Tetris.cpp
+        enums/Color.h
+        enums/Shape.h
+        enums/State.h
+        core/Game.cpp
+        core/Game.h
+        core/Renderer.cpp
+        core/Renderer.h
+        #[[classes/Piece.cpp
+        classes/Piece.h
+        classes/Renderer.cpp
+        classes/Renderer.h
+        classes/screen/Game.cpp
+        classes/screen/Game.h
+        classes/screen/Menu.cpp
+        classes/screen/Menu.h
+        classes/screen/Screen.h]]
+        screens/Board.cpp
+        screens/Board.h
+        screens/Menu.cpp
+        screens/Menu.h
+        screens/Screen.h
 )
 
 target_compile_features(Tetris PRIVATE cxx_std_17)
@@ -63,9 +72,13 @@ if(WIN32)
     )
 endif()
 
-set_target_properties(Tetris PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:Tetris>"
-)
+# VS_DEBUGGER_WORKING_DIRECTORY is deliberately not set here. Visual Studio in
+# Open Folder mode reads the working directory from the CMake file API, and the
+# file api passes the property through without evaluating generator
+# expressions, so "$<TARGET_FILE_DIR:Tetris>" would reach the debugger verbatim
+# and fail to start. Without the property Visual Studio falls back to the folder
+# that contains the executable, which is exactly where the assets and the DLLs
+# are copied to.
 
 set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" PROPERTY VS_STARTUP_PROJECT Tetris)
 

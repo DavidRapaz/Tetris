@@ -1,6 +1,6 @@
 #include "Piece.h"
 
-#include "../Shape.h"
+#include "../enums/Shape.h"
 #include "../Color.h"
 
 // STD Includes
@@ -193,10 +193,10 @@ void Piece::Rotate(int rotation)
 		this->rotation = 0;
 
 	/*
-	* Sector 0 = 0º
-	* Sector 1 = 90º
-	* Sector 2 = 180º
-	* Sector 3 = 270º
+	* Sector 0 = 0ï¿½
+	* Sector 1 = 90ï¿½
+	* Sector 2 = 180ï¿½
+	* Sector 3 = 270ï¿½
 	*/
 
 	int sector = this->rotation / 90;
@@ -219,7 +219,7 @@ void Piece::Rotate(int rotation)
 }
 
 /// <summary>
-/// Rotates the T Shape piece since -1 = -90º and 1 = 90º
+/// Rotates the T Shape piece since -1 = -90ï¿½ and 1 = 90ï¿½
 /// In the shape every piece rotates around the base of the T
 /// which means only the 3 first indexes need to be updated
 /// </summary>
@@ -253,7 +253,7 @@ void Piece::TShapeRotate(int& sector)
 }
 
 /// <summary>
-/// Rotates the Z Shape piece since -1 = -90º and 1 = 90º
+/// Rotates the Z Shape piece since -1 = -90ï¿½ and 1 = 90ï¿½
 /// </summary>
 /// <param name="sector"></param>
 void Piece::ZShapeRotate(int& sector)
@@ -283,7 +283,7 @@ void Piece::ZShapeRotate(int& sector)
 }
 
 /// <summary>
-/// Rotates the L Shape piece since -1 = -90º and 1 = 90º
+/// Rotates the L Shape piece since -1 = -90ï¿½ and 1 = 90ï¿½
 /// </summary>
 /// <param name="rotation"></param>
 void Piece::LShapeRotate(int& sector)
@@ -313,7 +313,7 @@ void Piece::LShapeRotate(int& sector)
 }
 
 /// <summary>
-/// Rotates the I Shape piece since -1 = -90º and 1 = 90º
+/// Rotates the I Shape piece since -1 = -90ï¿½ and 1 = 90ï¿½
 /// </summary>
 /// <param name="rotation"></param>
 void Piece::IShapeRotate(int& sector)
